@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#2b56c6</color>
+
+    <color name="colorBlue">#2b56c6</color>
+    <color name="colorBlueLight">#662b56c6</color>
+    <color name="colorToolbar">#36474f</color>
+    <color name="colorToolbar50">#7f36474f</color>
+    <color name="colorBackground">#273238</color>
+    <color name="colorLightTextColor">#7d8e98</color>
+    <color name="defaultExerciseColor">#7d8e98</color>
+</resources>

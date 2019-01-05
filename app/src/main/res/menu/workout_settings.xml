@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <item
+        android:id="@+id/exercise_replace"
+        android:title="Настроить"
+        />
+
+    <item
+        android:id="@+id/rename"
+        android:title="Переименовать"
+        />
+    <item
+        android:checkable="true"
+        android:id="@+id/showPosition"
+        android:title="Позиция"
+        />
+
+    <item
+        android:checkable="true"
+        android:id="@+id/vibration"
+        android:title="Вибрация"
+        />
+</menu>
