@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -147,6 +149,9 @@ public class MainFragment extends Fragment {
             final View dialogView = inflater.inflate(R.layout.new_workout, null);
 
             final EditText editText = dialogView.findViewById(R.id.workoutName);
+            final TextInputLayout container =  dialogView.findViewById(R.id.containerEditText);
+
+
 
             dialogBuilder.setView(dialogView);
 
@@ -155,26 +160,40 @@ public class MainFragment extends Fragment {
                     dialog.dismiss();
                 }
             });
-            dialogBuilder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    String name = editText.getText().toString();
-                    if(!name.equals("")){
-                        mRealm.beginTransaction();
-                        WorkOut workOut = mRealm.createObject(WorkOut.class, App.getNextWorkoutId(mRealm));
-                        workOut.setName(name);
-                        godObject.getWorkouts().add(workOut);
-                        mRealm.commitTransaction();
-                        adapter.notifyDataSetChanged();
-                        Log.d("TAG21", " w s" + workOuts.size());
-                        dialog.dismiss();
-                    }  else {
-                        onClick23(v);
-                        Toast.makeText(getContext(), "Name should not be empty", Toast.LENGTH_SHORT).show();
-                    }
+
+            dialogBuilder.setPositiveButton("Ok", null);
+
+            final AlertDialog b = dialogBuilder.create();
+            b.setOnShowListener(new DialogInterface.OnShowListener() {
+
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+
+
+                    Button button = ((AlertDialog) b).getButton(AlertDialog.BUTTON_POSITIVE);
+
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String name = editText.getText().toString();
+
+                            if(name.length()<3){
+                                container.setError("Не менее трех символов");
+                            } else {
+                                mRealm.beginTransaction();
+                                WorkOut workOut = mRealm.createObject(WorkOut.class, App.getNextWorkoutId(mRealm));
+                                workOut.setName(name);
+                                godObject.getWorkouts().add(workOut);
+                                mRealm.commitTransaction();
+                                adapter.notifyDataSetChanged();
+                                Log.d("TAG21", " w s" + workOuts.size());
+                                b.dismiss();
+                            }
+                        }
+                    });
+
                 }
             });
-
-            AlertDialog b = dialogBuilder.create();
             b.show();
         }
         if(mode == Mode.SETTINGS){

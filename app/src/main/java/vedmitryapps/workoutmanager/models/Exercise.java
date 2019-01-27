@@ -8,8 +8,6 @@ public class Exercise extends RealmObject {
     @PrimaryKey
     long id;
     String name;
-    int timeInSeconds;
-    int sound;
     boolean vibration;
 
     public long getId() {
@@ -32,6 +30,8 @@ public class Exercise extends RealmObject {
         return timeInSeconds;
     }
 
+    int timeInSeconds;
+    int sound;
     public void setTimeInSeconds(int timeInSeconds) {
         this.timeInSeconds = timeInSeconds;
     }

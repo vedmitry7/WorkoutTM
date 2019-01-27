@@ -34,4 +34,19 @@ public class SharedManager {
         }
         return settings.getBoolean( name, false );
     }
+
+    public static void addIntProperty(String name, int value ){
+        if( settings == null ){
+            init();
+        }
+        editor.putInt( name, value );
+        editor.commit();
+    }
+
+    public static int getIntProperty(String name ){
+        if( settings == null ){
+            init();
+        }
+        return settings.getInt( name, 0 );
+    }
 }

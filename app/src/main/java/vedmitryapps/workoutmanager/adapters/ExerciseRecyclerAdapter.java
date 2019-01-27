@@ -340,7 +340,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
                 soundContainer.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onClickBottomButton(View view) {
                         Log.d("TAG21", "Click change");
                         EventBus.getDefault().post(new Events.ChooseSound(exercise));
                         //showChooseSoundDialog();
@@ -348,12 +348,12 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                 });
 
                 dialogBuilder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                    public void onClickBottomButton(DialogInterface dialog, int whichButton) {
                         dialog.dismiss();
                     }
                 });
                 dialogBuilder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
+                    public void onClickBottomButton(DialogInterface dialog, int whichButton) {
                         String name = editText.getText().toString();
                         int timeInSeconds = numberPickerMinutes.getValue()*60 + numberPickerSeconds.getValue();
 

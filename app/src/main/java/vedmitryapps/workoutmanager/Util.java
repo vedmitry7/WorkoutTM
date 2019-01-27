@@ -3,6 +3,7 @@ package vedmitryapps.workoutmanager;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -176,7 +177,7 @@ public class Util {
                 if(exercises.get(i).isVibration()){
                     Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                     long[] pattern = {0, 200};
-                    v.vibrate(pattern, 0);
+                    v.vibrate(pattern, -1);
                 }
             }
         }

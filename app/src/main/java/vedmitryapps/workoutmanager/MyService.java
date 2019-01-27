@@ -34,8 +34,6 @@ public class MyService extends Service {
     Map progress = new HashMap<Long, Integer>();
 
     Context context;
-
-
     Map<Long, Events.WorkoutStep> finishedStepMap = new HashMap();
 
 
@@ -48,13 +46,17 @@ public class MyService extends Service {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStart(Events.StartWorkout workout) {
-        Log.d("TAG21", "Start - " + workout.getId() + " starting time - " + workout.getStartTime());
+        Log.d("TAG23", "Start - " + workout.getId() + " starting time - " + workout.getStartTime());
         if(progress.get(workout.getId())==null){
+            Log.d("TAG23", "Start - pr was null. set start time");
             progress.put(workout.getId(), workout.getStartTime());
-            startWorkout(workout.getId());
+            startWorkout(workout.getId(), true);
         } else {
-            startWorkout(workout.getId());
+            Log.d("TAG23", "Start - pr was not null");
+            startWorkout(workout.getId(), false);
         }
+
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -94,12 +96,13 @@ public class MyService extends Service {
     }
 
 
-    void startWorkout(final long id){
+    void startWorkout(final long id, boolean missStartSound){
         Log.d("TAG21", "Start workout");
 
         final WorkOut workOut = mRealm.where(WorkOut.class).equalTo("id", id).findFirst();
-        final RealmList<Exercise> exercises = workOut.getExcersices();
 
+        final boolean[] mas = new boolean[1];
+        mas[0] = missStartSound;
 
         final int totalTime = Util.totalTime(workOut);
         final int currentProgress;
@@ -125,7 +128,7 @@ public class MyService extends Service {
                     currentProgress = 0;
                 }
 
-                Log.d("TAG22", "Step - " + currentProgress + " workout - " + id);
+                Log.d("TAG23", "Step - " + currentProgress + " workout - " + id);
                 Log.d("TAG21", "cur - " + currentProgress);
                 Events.WorkoutStep step = new Events.WorkoutStep(id, currentProgress);
                 if(currentProgress == totalTime){
@@ -137,18 +140,30 @@ public class MyService extends Service {
                 EventBus.getDefault().post(step);
                 Realm mRealm = Realm.getDefaultInstance();
                 WorkOut workOut1 = mRealm.where(WorkOut.class).equalTo("id", id).findFirst();
-                if(Util.isLastSecond(context, workOut1, currentProgress))
-                    Log.d("TAG22", " That's it!");
+
+
+                for (int i = 0; i < workOut1.getExcersices().size(); i++) {
+                    Log.d("TAG23", workOut1.getExcersices().get(i).getName());
+                }
+
+                if(!mas[0]){
+                    Log.d("23", " Not miss");
+                    if(Util.isLastSecond(context, workOut1, currentProgress))
+                        Log.d("23", " That's it!");
+                } else {
+                    Log.d("23", " Miss first");
+                    mas[0] = false;
+                }
 
                 progress.put(id, ++currentProgress);
 
                 if((int)progress.get(id)>totalTime){
-                    Log.d("TAG21", " cancel tascurrentProgressk");
+                    Log.d("TAG23", " cancel task current Progress");
                     ((TimerTask)workouts.get(id)).cancel();
                     workouts.remove(id);
                     progress.remove(id);
                 }
-
+                mRealm.close();
             }
         });
 

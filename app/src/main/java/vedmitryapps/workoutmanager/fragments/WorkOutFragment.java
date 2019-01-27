@@ -274,7 +274,7 @@ public class WorkOutFragment extends Fragment  {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @OnClick(R.id.bottomButton)
-    public void onClick(View v){
+    public void onClickBottomButton(View v){
         Log.d("TAG21", "Click");
 
         if(mode.equals(Mode.NORMAL)){
@@ -292,6 +292,12 @@ public class WorkOutFragment extends Fragment  {
             Log.d("TAG21", "commitTransaction bottomButton");
             mRealm.commitTransaction();
             workoutSettings.setVisibility(View.VISIBLE);
+
+            Log.d("TAG23", "---------work Out");
+
+            for (int i = 0; i < workOut.getExcersices().size(); i++) {
+                Log.d("TAG23", workOut.getExcersices().get(i).getName());
+            }
         }
 
         if(mode == Mode.PLAYING){
@@ -379,12 +385,14 @@ public class WorkOutFragment extends Fragment  {
             numberPickerSeconds.setValue(seconds);
             soundPosition = exercise.getSound();
             vibrationCheckBox.setChecked(exercise.isVibration());
+            soundName.setText(Constants.soundsTitle[soundPosition]);
         } else {
 
             //set default values
+            vibrationCheckBox.setChecked(SharedManager.getProperty(Constants.KEY_DEF_VIBRATION));
+            soundName.setText(Constants.soundsTitle[SharedManager.getIntProperty(Constants.KEY_DEF_SOUND)]);
         }
 
-        soundName.setText(Constants.soundsTitle[soundPosition]);
 
         final Exercise finalExercise = exercise;
         soundContainer.setOnClickListener(new View.OnClickListener() {

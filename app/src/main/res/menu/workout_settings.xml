@@ -16,10 +16,4 @@
         android:id="@+id/showPosition"
         android:title="Позиция"
         />
-
-    <item
-        android:checkable="true"
-        android:id="@+id/vibration"
-        android:title="Вибрация"
-        />
 </menu>
