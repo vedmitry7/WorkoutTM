@@ -1,5 +1,6 @@
 package vedmitryapps.workoutmanager.fragments;
 
+import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -137,7 +138,6 @@ public class MainFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-
     @OnClick(R.id.bottomButton)
     public void onClick23(final View v){
 
@@ -252,7 +252,7 @@ public class MainFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onStart(Events.UpdateWorkout workout) {
+    public void updateWorkout(Events.UpdateWorkout workout) {
         Log.d("TAG21", "UpdateWorkout - " + workout.getId());
 
         stepMap = storage.getState();

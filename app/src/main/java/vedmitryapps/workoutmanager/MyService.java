@@ -32,6 +32,7 @@ public class MyService extends Service {
 
     Map workouts = new HashMap<Long, TimerTask>();
     Map progress = new HashMap<Long, Integer>();
+    Map repeat = new HashMap<Long, Integer>();
 
     Context context;
     Map<Long, Events.WorkoutStep> finishedStepMap = new HashMap();
@@ -58,6 +59,13 @@ public class MyService extends Service {
 
 
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void repeating(Events.Repeating workout) {
+        repeat.put(workout.getId(), workout.repeatingCount);
+    }
+
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPause(Events.PauseWorkout workout) {
@@ -121,20 +129,28 @@ public class MyService extends Service {
                 int currentProgress;
 
                 //if progress for this workout empty
-                if(progress.get(id)!=null) {
-                    currentProgress = (int)progress.get(id);
-                }
-                else {
+                if (progress.get(id) != null) {
+                    currentProgress = (int) progress.get(id);
+                } else {
                     currentProgress = 0;
+                }
+
+                int repeatCount = 0;
+                if (repeat.containsKey(id)) {
+                    repeatCount = (int) repeat.get(id);
                 }
 
                 Log.d("TAG23", "Step - " + currentProgress + " workout - " + id);
                 Log.d("TAG21", "cur - " + currentProgress);
                 Events.WorkoutStep step = new Events.WorkoutStep(id, currentProgress);
-                if(currentProgress == totalTime){
-                    step.setFinished(true);
-                    finishedStepMap.put(step.getId(), step);
-                    EventBus.getDefault().postSticky(finishedStepMap);
+                step.setRepeating(repeatCount);
+                if (currentProgress == totalTime) {
+                    if(repeatCount == 0){
+                        step.setFinished(true);
+                        finishedStepMap.put(step.getId(), step);
+                        EventBus.getDefault().postSticky(finishedStepMap);
+                    }
+                    //to show if app was foreground before
                 }
 
                 EventBus.getDefault().post(step);
@@ -146,9 +162,9 @@ public class MyService extends Service {
                     Log.d("TAG23", workOut1.getExcersices().get(i).getName());
                 }
 
-                if(!mas[0]){
+                if (!mas[0]) {
                     Log.d("23", " Not miss");
-                    if(Util.isLastSecond(context, workOut1, currentProgress))
+                    if (Util.isLastSecond(context, workOut1, currentProgress))
                         Log.d("23", " That's it!");
                 } else {
                     Log.d("23", " Miss first");
@@ -157,14 +173,27 @@ public class MyService extends Service {
 
                 progress.put(id, ++currentProgress);
 
-                if((int)progress.get(id)>totalTime){
-                    Log.d("TAG23", " cancel task current Progress");
-                    ((TimerTask)workouts.get(id)).cancel();
-                    workouts.remove(id);
-                    progress.remove(id);
+
+
+                    if ((int) progress.get(id) > totalTime) {
+
+                        if (repeatCount > 0) {
+                            Log.d("TAG23", " repeatCount = " + repeatCount);
+                            ((TimerTask) workouts.get(id)).cancel();
+                            progress.put(id, null);
+                            repeat.put(id, --repeatCount);
+                            ((TimerTask) workouts.get(id)).cancel();
+                            EventBus.getDefault().post(new Events.StartWorkout(id, 0));
+                        } else {
+                            Log.d("TAG23", " cancel task current Progress");
+                            ((TimerTask) workouts.get(id)).cancel();
+                            workouts.remove(id);
+                            progress.remove(id);
+                        }
+                    }
+                    mRealm.close();
                 }
-                mRealm.close();
-            }
+
         });
 
         timer.schedule((TimerTask) workouts.get(id), 0, interval);

@@ -49,8 +49,9 @@
                 android:id="@+id/bottomButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:paddingLeft="8dp"
-                android:text="Добавить новое упражнение"
+                android:text="@string/add_new_exercise"
                 android:textColor="@android:color/white"
                 android:textSize="14dp" />
 
@@ -67,26 +68,44 @@
         android:background="@color/colorBackground"
         app:layout_constraintBottom_toTopOf="@+id/bottomButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/workoutPanel" />
+        app:layout_constraintTop_toBottomOf="@+id/workoutPanel"
+        app:layout_constraintVertical_bias="1.0" />
 
 
     <android.support.constraint.ConstraintLayout
-        android:background="@color/colorToolbar50"
         android:id="@+id/workoutPanel"
-        android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorToolbar50"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarLayout">
+
+        <TextView
+            android:id="@+id/repeatingCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:text="R0"
+            android:textColor="@android:color/white"
+            android:textSize="22dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/currentTimeContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/currentTimeContainer"
+            app:layout_constraintVertical_bias="0.514" />
 
         <TextView
             android:id="@+id/totalProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
             android:text="00:20/4:00"
             android:textColor="@android:color/white"
             android:textSize="18dp"
@@ -98,10 +117,10 @@
             android:id="@+id/exerciseName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
-            android:text="Отжимания"
+            android:text=""
             android:textColor="@android:color/white"
             android:textSize="18dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -112,7 +131,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/exerciseName"
@@ -138,34 +159,50 @@
         </LinearLayout>
 
         <ImageView
-            android:visibility="gone"
             android:id="@+id/buttonPlay"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:padding="6dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/currentTimeContainer"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/currentTimeContainer"
+            app:layout_constraintTop_toTopOf="@+id/currentTimeContainer"
             app:srcCompat="@drawable/ic_play_white_24dp"
             tools:ignore="MissingConstraints" />
 
         <ImageView
-            android:visibility="gone"
             android:id="@+id/buttonPause"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:padding="6dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/currentTimeContainer"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/currentTimeContainer"
+            app:layout_constraintTop_toTopOf="@+id/currentTimeContainer"
             app:srcCompat="@drawable/ic_pause_white_24dp"
             tools:ignore="MissingConstraints" />
 
-    <!--    <View
+        <ImageView
+            android:id="@+id/minusButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/repeatingCount"
+            app:layout_constraintTop_toBottomOf="@+id/repeatingCount"
+            app:srcCompat="@drawable/ic_chevron_down" />
+
+        <ImageView
+            android:id="@+id/plusButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/repeatingCount"
+            app:layout_constraintStart_toStartOf="@+id/repeatingCount"
+            app:srcCompat="@drawable/ic_chevron_up" />
+
+        <!--    <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="@android:color/white"
@@ -178,15 +215,17 @@
         android:id="@+id/toolbarLayout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/colorToolbar">
+        android:background="@color/colorToolbar"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="39dp">
 
 
         <ImageView
             android:id="@+id/backButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginLeft="3dp"
             android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
             android:padding="12dp"
             android:src="@drawable/ic_back"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -197,9 +236,9 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:text="Workout name"
+            android:layout_marginLeft="8dp"
+            android:text=""
             android:textColor="@android:color/white"
             android:textSize="20dp"
             android:textStyle="bold"

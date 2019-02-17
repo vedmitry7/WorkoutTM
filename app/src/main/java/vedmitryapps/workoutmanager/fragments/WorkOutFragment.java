@@ -63,6 +63,10 @@ public class WorkOutFragment extends Fragment  {
     @BindView(R.id.title)
     TextView title;
 
+
+    @BindView(R.id.repeatingCount)
+    TextView repeatingTextView;
+
     @BindView(R.id.exerciseName)
     TextView exerciseName;
 
@@ -117,6 +121,7 @@ public class WorkOutFragment extends Fragment  {
     Map<Long, Events.WorkoutStep> stepMap = new HashMap();
 
     int soundPosition = 0;
+    private int repeatingCount;
 
     public static WorkOutFragment createInstance(long id) {
         WorkOutFragment fragment = new WorkOutFragment();
@@ -202,6 +207,8 @@ public class WorkOutFragment extends Fragment  {
             exerciseCurrentTime.setText("" + Util.getCurrentExerciseProgressString(workOut, stepMap.get(workoutStep.getId()).getTime()));
         }
         exerciseTotalTime.setText("/" + Util.secondsToTime(Util.getCurrentExercise(workOut, stepMap.get(workoutStep.getId()).getTime()).getTimeInSeconds()));
+        repeatingCount = workoutStep.getRepeating();
+        repeatingTextView.setText("R" + workoutStep.getRepeating());
     }
 
     void showPause(){
@@ -308,14 +315,14 @@ public class WorkOutFragment extends Fragment  {
 
     private void showStopTrainingDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
-        dialogBuilder.setMessage("Остановить тренировку?");
+        dialogBuilder.setMessage(R.string.q_stop_workout);
 
-        dialogBuilder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
             }
         });
-        dialogBuilder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 EventBus.getDefault().post(new Events.StopWorkout(workOut.getId()));
                 dialog.dismiss();
@@ -331,7 +338,7 @@ public class WorkOutFragment extends Fragment  {
             EventBus.getDefault().post(new Events.StartWorkout(workOut.getId(), Util.getStartingTime(workOut, adapter.getStartPosition())));
             showPause();
         } else {
-            Toast.makeText(getContext(), "Нечего проигрывать", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.nothing_to_play), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -408,12 +415,12 @@ public class WorkOutFragment extends Fragment  {
             }
         });
 
-        dialogBuilder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
             }
         });
-        dialogBuilder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 if(mode == Mode.NORMAL){
                     Log.d("TAG21", "beginTransaction pos button");
@@ -486,12 +493,12 @@ public class WorkOutFragment extends Fragment  {
 
         adapter.setSelectedPosition(soundPosition);
 
-        dialogBuilder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
             }
         });
-        dialogBuilder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 soundName.setText(adapter.getSoundName());
                 soundPosition = adapter.getSoundPosition();
@@ -586,7 +593,7 @@ public class WorkOutFragment extends Fragment  {
 
                     case R.id.rename:
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
-                        dialogBuilder.setTitle("Переименовать");
+                        dialogBuilder.setTitle(R.string.rename);
 
                         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
                         final View dialogView = inflater.inflate(R.layout.new_workout, null);
@@ -596,7 +603,7 @@ public class WorkOutFragment extends Fragment  {
 
                         dialogBuilder.setView(dialogView);
 
-                        dialogBuilder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 dialog.dismiss();
                             }
@@ -631,17 +638,35 @@ public class WorkOutFragment extends Fragment  {
         popupMenu.show();
     }
 
+
+    @OnClick(R.id.plusButton)
+    public void plus(View v){
+        repeatingCount++;
+        repeatingTextView.setText("R" + repeatingCount);
+        EventBus.getDefault().post(new Events.Repeating(workOut.getId(), repeatingCount));
+    }
+
+    @OnClick(R.id.minusButton)
+    public void minus(View v){
+        if(repeatingCount==0){
+            return;
+        }
+        repeatingCount--;
+        repeatingTextView.setText("R" + repeatingCount);
+        EventBus.getDefault().post(new Events.Repeating(workOut.getId(), repeatingCount));
+    }
+
     private void setBottomButtonParams(Mode mode) {
         if(mode == Mode.PLAYING){
-            bottomButtonText.setText("Отсановить тренировку");
-            bottomButtonIcon.setImageResource(R.drawable.ic_delete_cross);
+            bottomButtonText.setText(getString(R.string.stop_workout));
+            bottomButtonIcon.setImageResource(R.drawable.ic_stop);
         }
         if(mode == Mode.NORMAL){
-            bottomButtonText.setText("Добавить новое упражнение");
+            bottomButtonText.setText(getString(R.string.add_new_exercise));
             bottomButtonIcon.setImageResource(R.drawable.ic_add);
         }
         if(mode == Mode.SETTINGS){
-            bottomButtonText.setText("Готово");
+            bottomButtonText.setText(getString(R.string.done));
             bottomButtonIcon.setImageResource(R.drawable.ic_check_mark);
         }
     }

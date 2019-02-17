@@ -4,6 +4,7 @@ apply plugin: 'realm-android'
 android {
     compileSdkVersion 28
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "vedmitryapps.workouttm"
         minSdkVersion 15
         targetSdkVersion 28

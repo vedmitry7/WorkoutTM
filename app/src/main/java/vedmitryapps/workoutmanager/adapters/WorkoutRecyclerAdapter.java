@@ -38,6 +38,8 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
     OnStartDragListener onStartDragListener;
 
     Map<Long, Events.WorkoutStep> stepMap = new HashMap();
+    private int fromPosition;
+    private int toPosition;
 
 
     // data is passed into the constructor
@@ -101,6 +103,14 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
                     holder.workoutTotalTime.setText(Util.secondsToTime(Util.totalTime(workOuts.get(position))));
                 }
 
+                if(workoutStep.getRepeating()==0){
+                    holder.repeating.setVisibility(View.GONE);
+                } else {
+                    holder.repeating.setVisibility(View.VISIBLE);
+                    holder.repeating.setText("R" + workoutStep.getRepeating());
+                }
+
+
             } else {
                 holder.exerciseName.setText("Finished");
                 holder.progressLayout.setVisibility(View.GONE);
@@ -109,6 +119,8 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
                 holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
                 holder.buttonPause.setVisibility(View.GONE);
                 holder.buttonPlay.setVisibility(View.VISIBLE);
+                holder.repeating.setVisibility(View.GONE);
+
             }
             if(mode == Mode.NORMAL){
              //   holder.holder.setVisibility(View.GONE);
@@ -122,6 +134,8 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
 
             holder.buttonPlay.setVisibility(View.VISIBLE);
             holder.buttonPause.setVisibility(View.GONE);
+
+            holder.repeating.setVisibility(View.GONE);
         }
 
         if(mode == Mode.SETTINGS || mode == Mode.DRAG_AND_DROP){
@@ -224,6 +238,8 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         Log.d("TAG21", "Ws.From - " + fromPosition + " to - " + toPosition);
         notifyItemMoved(fromPosition, toPosition);
         workOuts.move(fromPosition, toPosition);
+        this.fromPosition = fromPosition;
+        this.toPosition = toPosition;
         return false;
     }
 
@@ -273,6 +289,9 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         @BindView(R.id.exerciseName)
         TextView exerciseName;
 
+        @BindView(R.id.repeating)
+        TextView repeating;
+
         @BindView(R.id.mainContainer)
         ConstraintLayout mainContainer;
 
@@ -296,6 +315,8 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         public void onItemClear() {
             Log.d("TAG21", "onItemClear");
             mode = Mode.SETTINGS;
+            notifyItemChanged(fromPosition);
+            notifyItemChanged(toPosition);
         }
     }
 }

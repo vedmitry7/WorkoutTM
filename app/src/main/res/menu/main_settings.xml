@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/workout_replace"
-        android:title="Переместить, удалить"
+        android:title="@string/move_delete"
         />
 
     <item
         android:id="@+id/generalSettings"
-        android:title="Настройки"
+        android:title="@string/settings"
         />
 </menu>

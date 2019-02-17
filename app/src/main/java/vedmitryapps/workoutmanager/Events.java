@@ -87,6 +87,7 @@ public class Events {
         private boolean finished;
         private boolean paused;
         private boolean itterapted;
+        private int repeating;
 
         public WorkoutStep(long id, int time) {
             this.id = id;
@@ -122,6 +123,14 @@ public class Events {
 
         public void setItterapted(boolean itterapted) {
             this.itterapted = itterapted;
+        }
+
+        public int getRepeating() {
+            return repeating;
+        }
+
+        public void setRepeating(int repeating) {
+            this.repeating = repeating;
         }
     }
 
@@ -315,6 +324,23 @@ public class Events {
         Long workoutId;
         public DeleteFromFinished(Long workoutId) {
             this.workoutId = workoutId;
+        }
+    }
+
+    public static class Repeating {
+        long id;
+        int repeatingCount;
+        public Repeating(long id, int repeatingCount) {
+            this.id = id;
+            this.repeatingCount = repeatingCount;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public int getRepeatingCount() {
+            return repeatingCount;
         }
     }
 }

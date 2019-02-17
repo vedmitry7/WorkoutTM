@@ -4,16 +4,16 @@
     >
     <item
         android:id="@+id/exercise_replace"
-        android:title="Настроить"
+        android:title="@string/set"
         />
 
     <item
         android:id="@+id/rename"
-        android:title="Переименовать"
+        android:title="@string/rename"
         />
     <item
         android:checkable="true"
         android:id="@+id/showPosition"
-        android:title="Позиция"
+        android:title="@string/position"
         />
 </menu>

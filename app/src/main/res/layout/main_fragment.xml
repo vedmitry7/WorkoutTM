@@ -93,7 +93,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="8dp"
-                android:text="Добавить новую тренировку"
+                android:layout_gravity="center"
+                android:text="@string/add_new_workout"
                 android:textColor="@android:color/white"
                 android:textSize="14dp" />
 
