@@ -250,18 +250,20 @@ public class WorkOutFragment extends Fragment  {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onClickExercise(Events.ClickExercise event) {
         Log.d("TAG21", "Click Ex " + event.getPosition());
-        totalTime.setText("Общее время: " + Util.secondsToTime(Util.totalTime(workOut)));
+
+        String commonTime = getString(R.string.total_time) + " ";
+        totalTime.setText(commonTime + Util.secondsToTime(Util.totalTime(workOut)));
         exerciseCurrentTime.setText("00:00");
         if(event.getPosition()!=-1){
             exerciseName.setText(workOut.getExcersices().get(event.getPosition()).getName());
             exerciseTotalTime.setText("/" + Util.secondsToTime(workOut.getExcersices().get(event.getPosition()).getTimeInSeconds()));
         } else {
-            totalTime.setText("Общее время: 00:00");
+            totalTime.setText(commonTime + "00:00");
             exerciseName.setText("");
             exerciseTotalTime.setText("/00:00");
         }
 
-        totalTime.setText("Общее время: " + Util.secondsToTime(Util.totalTime(workOut)));
+        totalTime.setText(commonTime + Util.secondsToTime(Util.totalTime(workOut)));
 
     }
 
@@ -543,6 +545,22 @@ public class WorkOutFragment extends Fragment  {
 
                         break;
                     case R.id.exercise_replace:
+
+                        if(mode == Mode.PLAYING){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder
+                                    .setMessage(R.string.stop_workout_to_make_change)
+                                    .setNegativeButton(R.string.ok,
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+
+                            return true;
+                        }
 
                         ViewGroup.LayoutParams layoutParams = panel.getLayoutParams();
 

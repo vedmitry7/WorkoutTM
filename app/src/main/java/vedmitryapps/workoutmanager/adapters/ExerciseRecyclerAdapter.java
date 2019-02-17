@@ -266,14 +266,14 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                 public void onClick(View view) {
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
                     LayoutInflater inflater = (LayoutInflater) itemView.getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-                    dialogBuilder.setMessage("Вы действительно хотите удалить " + exercises.get(getAdapterPosition()).getName() + "?");
+                    dialogBuilder.setMessage(R.string.q_delete_exercise + " " + exercises.get(getAdapterPosition()).getName() + "?");
 
-                    dialogBuilder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             dialog.dismiss();
                         }
                     });
-                    dialogBuilder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
+                    dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             exercises.remove(getAdapterPosition());
                             notifyItemRemoved(getAdapterPosition());
@@ -313,70 +313,17 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             }
 
             if(mode == Mode.SETTINGS){
-
                 final Exercise exercise = exercises.get(itemPosition);
-
                 EventBus.getDefault().post(exercise);
-
-                /*AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-                final View dialogView = inflater.inflate(R.layout.create_period_dialog_layout, null);
-                dialogBuilder.setView(dialogView);
-
-
-                final EditText editText = dialogView.findViewById(R.id.editText);
-                editText.setText(exercise.getName());
-
-                int minutes = exercise.getTimeInSeconds()/60;
-                int seconds = exercise.getTimeInSeconds()%60;
-
-                final NumberPicker numberPickerMinutes = dialogView.findViewById(R.id.numberPicker);
-                final NumberPicker numberPickerSeconds = dialogView.findViewById(R.id.numberPicker2);
-                numberPickerMinutes.setValue(minutes);
-                numberPickerSeconds.setValue(seconds);
-
-
-                ConstraintLayout soundContainer = dialogView.findViewById(R.id.soundContainer1);
-
-                soundContainer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClickBottomButton(View view) {
-                        Log.d("TAG21", "Click change");
-                        EventBus.getDefault().post(new Events.ChooseSound(exercise));
-                        //showChooseSoundDialog();
-                    }
-                });
-
-                dialogBuilder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                    public void onClickBottomButton(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                    }
-                });
-                dialogBuilder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
-                    public void onClickBottomButton(DialogInterface dialog, int whichButton) {
-                        String name = editText.getText().toString();
-                        int timeInSeconds = numberPickerMinutes.getValue()*60 + numberPickerSeconds.getValue();
-
-
-                        exercise.setName(name);
-                        exercise.setTimeInSeconds(timeInSeconds);
-                        notifyItemChanged(itemPosition);
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog b = dialogBuilder.create();
-                b.show();*/
             }
         }
 
         @Override
         public void onItemSelected() {
-
         }
 
         @Override
         public void onItemClear() {
-
         }
     }
 
@@ -396,15 +343,13 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        dialogBuilder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.dismiss();
             }
         });
-        dialogBuilder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-              /*  soundName.setText(adapter.getSoundName());
-                soundPosition = adapter.getSoundPosition();*/
                 dialog.dismiss();
             }
         });

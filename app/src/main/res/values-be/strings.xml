@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WorkoutTM</string>
+    <string name="stop_workout">Отсановить тренировку</string>
+    <string name="add_new_exercise">Добавить новое упражнение</string>
+    <string name="done">Готово</string>
+    <string name="cancel">Отмена</string>
+    <string name="rename">Переименовать</string>
+    <string name="ok">Ок</string>
+    <string name="nothing_to_play">Нечего проигрывать</string>
+    <string name="q_stop_workout">Остановить тренировку?</string>
+    <string name="add_new_workout">Добавить новую тренировку</string>
+    <string name="settings">Настройки</string>
+    <string name="move_delete">Переместить, удалить</string>
+    <string name="position">Позиция</string>
+    <string name="set">Настроить</string>
+    <string name="new_workout">Новая тренировка</string>
+    <string name="three_characters">Не менее трех символов</string>
+    <string name="def_sound">Звук упражнений по умолчанию</string>
+    <string name="def_vibration">Вибро по умолчанию</string>
+    <string name="stop_workout_to_make_change">Остановите тренировку чтобы внести изменения</string>
+    <string name="total_time">Общее время: </string>
+    <string name="q_delete_exercise">Вы действительно хотите удалить</string>
+</resources>

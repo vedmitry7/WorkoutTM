@@ -43,7 +43,7 @@
                 android:id="@+id/bottomButtonIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_add" />
+                app:srcCompat="@drawable/ic_add" />
 
             <TextView
                 android:id="@+id/bottomButtonText"
@@ -217,7 +217,8 @@
         android:layout_height="56dp"
         android:background="@color/colorToolbar"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="39dp">
+        tools:layout_editor_absoluteY="39dp"
+        tools:ignore="MissingConstraints">
 
 
         <ImageView
@@ -227,7 +228,7 @@
             android:layout_marginStart="3dp"
             android:layout_marginLeft="3dp"
             android:padding="12dp"
-            android:src="@drawable/ic_back"
+            app:srcCompat="@drawable/ic_back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -253,7 +254,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="12dp"
-            android:src="@drawable/ic_dots_vertical"
+            app:srcCompat="@drawable/ic_dots_vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

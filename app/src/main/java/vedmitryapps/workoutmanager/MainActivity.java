@@ -1,6 +1,7 @@
 package vedmitryapps.workoutmanager;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 import io.realm.Realm;
 import vedmitryapps.workoutmanager.fragments.MainFragment;
+import vedmitryapps.workoutmanager.fragments.SettingsFragment;
 import vedmitryapps.workoutmanager.fragments.WorkOutFragment;
 
 public class MainActivity extends AppCompatActivity implements Storage{
@@ -76,7 +78,14 @@ public class MainActivity extends AppCompatActivity implements Storage{
         }
     }
 
-    
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStart(Events.OpenSettings event) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment settingsFragment = new SettingsFragment();
+        transaction.replace(R.id.fragmentContainer, settingsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
     @Override
     protected void onStart() {

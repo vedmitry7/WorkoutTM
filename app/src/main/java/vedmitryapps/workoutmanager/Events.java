@@ -343,4 +343,7 @@ public class Events {
             return repeatingCount;
         }
     }
+
+    public static class OpenSettings {
+    }
 }

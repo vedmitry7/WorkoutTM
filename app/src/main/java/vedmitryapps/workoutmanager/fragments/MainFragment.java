@@ -1,6 +1,5 @@
 package vedmitryapps.workoutmanager.fragments;
 
-import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,11 +36,8 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import vedmitryapps.workoutmanager.App;
 import vedmitryapps.workoutmanager.Events;
-import vedmitryapps.workoutmanager.MainActivity;
 import vedmitryapps.workoutmanager.Mode;
-import vedmitryapps.workoutmanager.SettingsActivity;
 import vedmitryapps.workoutmanager.Storage;
-import vedmitryapps.workoutmanager.adapters.ExerciseTouchHelperCallback;
 import vedmitryapps.workoutmanager.adapters.OnStartDragListener;
 import vedmitryapps.workoutmanager.adapters.WorkoutRecyclerAdapter;
 import vedmitryapps.workoutmanager.R;
@@ -144,7 +139,7 @@ public class MainFragment extends Fragment {
 
         if(mode == Mode.NORMAL){
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
-            dialogBuilder.setTitle("Новая тренировка");
+            dialogBuilder.setTitle(R.string.new_workout);
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
             final View dialogView = inflater.inflate(R.layout.new_workout, null);
 
@@ -155,13 +150,13 @@ public class MainFragment extends Fragment {
 
             dialogBuilder.setView(dialogView);
 
-            dialogBuilder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+            dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     dialog.dismiss();
                 }
             });
 
-            dialogBuilder.setPositiveButton("Ok", null);
+            dialogBuilder.setPositiveButton(R.string.ok, null);
 
             final AlertDialog b = dialogBuilder.create();
             b.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -178,7 +173,7 @@ public class MainFragment extends Fragment {
                             String name = editText.getText().toString();
 
                             if(name.length()<3){
-                                container.setError("Не менее трех символов");
+                                container.setError(getString(R.string.three_characters));
                             } else {
                                 mRealm.beginTransaction();
                                 WorkOut workOut = mRealm.createObject(WorkOut.class, App.getNextWorkoutId(mRealm));
@@ -227,8 +222,7 @@ public class MainFragment extends Fragment {
                         break;
 
                     case R.id.generalSettings:
-                        Intent intent = new Intent(getContext(), SettingsActivity.class);
-                        startActivity(intent);
+                        EventBus.getDefault().post(new Events.OpenSettings());
                         break;
                     default:
                         return false;
@@ -242,11 +236,11 @@ public class MainFragment extends Fragment {
 
     private void setBottomButtonParams(Mode mode) {
         if(mode == Mode.NORMAL){
-            bottomButtonText.setText("Добавить новую тренировку");
+            bottomButtonText.setText(R.string.add_new_workout);
             bottomButtonIcon.setImageResource(R.drawable.ic_add);
         }
         if(mode == Mode.SETTINGS){
-            bottomButtonText.setText("Готово");
+            bottomButtonText.setText(R.string.done);
             bottomButtonIcon.setImageResource(R.drawable.ic_check_mark);
         }
     }
@@ -258,13 +252,6 @@ public class MainFragment extends Fragment {
         stepMap = storage.getState();
 
         adapter.update(stepMap);
-        /*int position = 0;
-        for (int i = 0; i < workOuts.size(); i++) {
-            if(workOuts.get(i).getId()==workout.getId()){
-                position = i;
-            }
-        }
-        adapter.updateItem2(1);*/
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
