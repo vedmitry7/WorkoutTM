@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">WorkoutTM</string>
+    <string name="admob_app_id" translatable="false">ca-app-pub-2209532931509792~8339365074</string>
+    <string name="admob_banner_id" translatable="false">ca-app-pub-2209532931509792/8814718236</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+     <string name="app_name">WorkoutTM</string>
     <string name="stop_workout">Stop workout</string>
     <string name="add_new_exercise">Add new exercise</string>
     <string name="done">Done</string>

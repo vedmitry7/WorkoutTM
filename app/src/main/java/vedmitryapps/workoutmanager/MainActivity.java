@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -15,6 +18,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import vedmitryapps.workoutmanager.fragments.MainFragment;
 import vedmitryapps.workoutmanager.fragments.SettingsFragment;
@@ -22,17 +27,24 @@ import vedmitryapps.workoutmanager.fragments.WorkOutFragment;
 
 public class MainActivity extends AppCompatActivity implements Storage{
 
-    Map<Long, Events.WorkoutStep> stepMap = new HashMap();
+    @BindView(R.id.adView)
+    AdView mAdView;
 
+    Map<Long, Events.WorkoutStep> stepMap = new HashMap();
     MainFragment mainFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Intent intent = new Intent(this, MyService.class);
         startService(intent);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         mainFragment = new MainFragment();
 
@@ -88,9 +100,25 @@ public class MainActivity extends AppCompatActivity implements Storage{
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mAdView != null)
+            mAdView.pause();
+    }
+
+
+    @Override
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mAdView != null)
+            mAdView.resume();
     }
 
     @Override
@@ -106,6 +134,14 @@ public class MainActivity extends AppCompatActivity implements Storage{
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mAdView != null)
+            mAdView.destroy();
     }
 
     @Override

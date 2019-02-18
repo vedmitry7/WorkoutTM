@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.util.DisplayMetrics;
 
+import com.google.android.gms.ads.MobileAds;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import vedmitryapps.workoutmanager.models.Exercise;
@@ -15,6 +17,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .deleteRealmIfMigrationNeeded()
