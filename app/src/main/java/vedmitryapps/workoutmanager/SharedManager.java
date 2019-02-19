@@ -32,7 +32,7 @@ public class SharedManager {
         if( settings == null ){
             init();
         }
-        return settings.getBoolean( name, false );
+        return settings.getBoolean( name, false);
     }
 
     public static void addIntProperty(String name, int value ){

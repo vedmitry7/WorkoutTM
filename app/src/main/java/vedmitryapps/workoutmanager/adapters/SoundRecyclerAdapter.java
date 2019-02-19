@@ -29,6 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import co.mobiwise.library.ProgressLayout;
 import io.realm.RealmList;
+import vedmitryapps.workoutmanager.Constants;
 import vedmitryapps.workoutmanager.Events;
 import vedmitryapps.workoutmanager.Mode;
 import vedmitryapps.workoutmanager.R;
@@ -41,9 +42,6 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
 
 
     Context context;
-
-    String[] soundsName = {"", "03963.mp3", "03965.mp3"};
-    String[] soundsTitle = {"none", "Sound 1", "Sound 2"};
 
 
     int selectedPosition = 0;
@@ -61,7 +59,7 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        holder.soundName.setText(soundsTitle[position]);
+        holder.soundName.setText(Constants.soundsTitle[position]);
 
         if(selectedPosition == position){
             holder.indicator.setVisibility(View.VISIBLE);
@@ -77,11 +75,11 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
     }
 
     public String getSoundName() {
-        return soundsTitle[selectedPosition];
+        return Constants.soundsTitle[selectedPosition];
     }
 
     public String getSoundNameByPosition(int position) {
-        return soundsTitle[position];
+        return Constants.soundsTitle[position];
     }
 
     public int getSoundPosition() {
@@ -124,7 +122,7 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
                     mp = new MediaPlayer();
                     AssetFileDescriptor afd = null;
                     try {
-                        afd = context.getAssets().openFd(soundsName[selectedPosition]);
+                        afd = context.getAssets().openFd(Constants.soundsName[selectedPosition]);
                         mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
                         //mp.setVolume(1f, 1f);
                         mp.prepare();

@@ -399,7 +399,7 @@ public class WorkOutFragment extends Fragment  {
 
             //set default values
             vibrationCheckBox.setChecked(SharedManager.getProperty(Constants.KEY_DEF_VIBRATION));
-            soundName.setText(Constants.soundsTitle[SharedManager.getIntProperty(Constants.KEY_DEF_SOUND)]);
+            soundName.setText(Constants.soundsTitle[SharedManager.getIntProperty(Constants.KEY_SOUND_POSITION)]);
         }
 
 
@@ -487,6 +487,8 @@ public class WorkOutFragment extends Fragment  {
         if(event!=null){
             soundPosition = event.getExercise().getSound();
             soundName.setText(adapter.getSoundNameByPosition(soundPosition));
+        } else {
+            soundPosition = SharedManager.getIntProperty(Constants.KEY_SOUND_POSITION);
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
