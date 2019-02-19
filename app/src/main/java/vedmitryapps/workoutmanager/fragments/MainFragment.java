@@ -152,6 +152,7 @@ public class MainFragment extends Fragment {
 
             dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
+                    App.closeKeyboard(getContext());
                     dialog.dismiss();
                 }
             });
@@ -183,12 +184,14 @@ public class MainFragment extends Fragment {
                                 adapter.notifyDataSetChanged();
                                 Log.d("TAG21", " w s" + workOuts.size());
                                 b.dismiss();
+                                App.closeKeyboard(getContext());
                             }
                         }
                     });
 
                 }
             });
+            App.showKeyboard(getContext());
             b.show();
         }
         if(mode == Mode.SETTINGS){

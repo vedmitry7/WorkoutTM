@@ -70,6 +70,10 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
     }
 
+    public int getCurExPos() {
+        return curExPos;
+    }
+
     public void setReplaceMode(boolean b){
         if(b){
             mode = Mode.SETTINGS;

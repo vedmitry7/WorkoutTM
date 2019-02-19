@@ -231,6 +231,8 @@ public class WorkOutFragment extends Fragment  {
 
             setStepInfo(stepMap.get(workout.getId()));
             adapter.update(workOut, stepMap.get(workout.getId()));
+
+            recyclerView.scrollToPosition(adapter.getCurExPos());
         }
 
 
@@ -359,6 +361,7 @@ public class WorkOutFragment extends Fragment  {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void showCreateOrChangeExerciseDialog(final Exercise exercise) {
 
+        App.showKeyboard(getContext());
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         final View dialogView = inflater.inflate(R.layout.create_period_dialog_layout, null);
@@ -388,6 +391,7 @@ public class WorkOutFragment extends Fragment  {
         soundName = dialogView.findViewById(R.id.soundName);
         if(exercise!=null){
             editText.setText(exercise.getName());
+            editText.setSelection(editText.getText().length());
             int minutes = exercise.getTimeInSeconds()/60;
             int seconds = exercise.getTimeInSeconds()%60;
             numberPickerMinutes.setValue(minutes);
@@ -400,6 +404,7 @@ public class WorkOutFragment extends Fragment  {
             //set default values
             vibrationCheckBox.setChecked(SharedManager.getProperty(Constants.KEY_DEF_VIBRATION));
             soundName.setText(Constants.soundsTitle[SharedManager.getIntProperty(Constants.KEY_SOUND_POSITION)]);
+            soundPosition = SharedManager.getIntProperty(Constants.KEY_SOUND_POSITION);
         }
 
 
@@ -419,6 +424,7 @@ public class WorkOutFragment extends Fragment  {
 
         dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                App.closeKeyboard(getContext());
                 dialog.dismiss();
             }
         });
@@ -462,7 +468,7 @@ public class WorkOutFragment extends Fragment  {
                     dialog.dismiss();
                 }
                 soundPosition = 0;
-
+                App.closeKeyboard(getContext());
             }
         });
         AlertDialog b = dialogBuilder.create();
@@ -612,6 +618,7 @@ public class WorkOutFragment extends Fragment  {
                         break;
 
                     case R.id.rename:
+                        App.showKeyboard(getContext());
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
                         dialogBuilder.setTitle(R.string.rename);
 
@@ -625,6 +632,7 @@ public class WorkOutFragment extends Fragment  {
 
                         dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+                                App.closeKeyboard(getContext());
                                 dialog.dismiss();
                             }
                         });
@@ -643,6 +651,7 @@ public class WorkOutFragment extends Fragment  {
                                     Toast.makeText(getContext(), "Name can not be empty", Toast.LENGTH_SHORT).show();
                                 }
 
+                                App.closeKeyboard(getContext());
                             }
                         });
                         AlertDialog b = dialogBuilder.create();

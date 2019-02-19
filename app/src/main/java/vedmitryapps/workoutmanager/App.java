@@ -3,6 +3,7 @@ package vedmitryapps.workoutmanager;
 import android.app.Application;
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.ads.MobileAds;
 
@@ -24,6 +25,17 @@ public class App extends Application {
                 .build();
         Realm.setDefaultConfiguration(config);
         SharedManager.init(this);
+    }
+
+    public static void closeKeyboard(Context context){
+        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
+
+    public static void showKeyboard(Context context){
+        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     public static long getNextPeriodKey(Realm mRealm) {

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "893639690342",
+    "firebase_url": "https://workouttm-99b29.firebaseio.com",
+    "project_id": "workouttm-99b29",
+    "storage_bucket": "workouttm-99b29.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893639690342:android:c7bf5016bb098344",
+        "android_client_info": {
+          "package_name": "vedmitryapps.workouttm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893639690342-1ier16b0qvl022u020b4iqr2kpfbeqar.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "vedmitryapps.workouttm",
+            "certificate_hash": "8d1f3441dd9d82fc4682d5dbd58058d5a6358cae"
+          }
+        },
+        {
+          "client_id": "893639690342-eqqm97re602q5ss84er7ilelov31g909.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYvIsePfwRJTZ7b50Bsx5ftbswdulO17M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893639690342-eqqm97re602q5ss84er7ilelov31g909.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
