@@ -50,11 +50,11 @@ public class MainFragment extends Fragment {
     @BindView(R.id.mainRecyclerView)
     RecyclerView recyclerView;
 
-    @BindView(R.id.bottomButtonIcon)
+/*    @BindView(R.id.bottomButtonIcon)
     ImageView bottomButtonIcon;
 
     @BindView(R.id.bottomButtonText)
-    TextView bottomButtonText;
+    TextView bottomButtonText;*/
 
     @BindView(R.id.settings)
     ImageView settings;
@@ -70,7 +70,6 @@ public class MainFragment extends Fragment {
     GodObject godObject;
 
     ItemTouchHelper itemTouchHelper;
-    private Mode mode = Mode.NORMAL;
 
 
     @Nullable
@@ -134,10 +133,7 @@ public class MainFragment extends Fragment {
     }
 
     @OnClick(R.id.bottomButton)
-    public void onClick23(final View v){
-
-
-        if(mode == Mode.NORMAL){
+    public void bottomButton(final View v){
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
             dialogBuilder.setTitle(R.string.new_workout);
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
@@ -145,8 +141,6 @@ public class MainFragment extends Fragment {
 
             final EditText editText = dialogView.findViewById(R.id.workoutName);
             final TextInputLayout container =  dialogView.findViewById(R.id.containerEditText);
-
-
 
             dialogBuilder.setView(dialogView);
 
@@ -158,14 +152,11 @@ public class MainFragment extends Fragment {
             });
 
             dialogBuilder.setPositiveButton(R.string.ok, null);
-
             final AlertDialog b = dialogBuilder.create();
             b.setOnShowListener(new DialogInterface.OnShowListener() {
 
                 @Override
                 public void onShow(DialogInterface dialogInterface) {
-
-
                     Button button = ((AlertDialog) b).getButton(AlertDialog.BUTTON_POSITIVE);
 
                     button.setOnClickListener(new View.OnClickListener() {
@@ -193,59 +184,11 @@ public class MainFragment extends Fragment {
             });
             App.showKeyboard(getContext());
             b.show();
-        }
-        if(mode == Mode.SETTINGS){
-            mode = Mode.NORMAL;
-            adapter.setReplaceMode(false);
-            setBottomButtonParams(mode);
-            mRealm.commitTransaction();
-            settings.setVisibility(View.VISIBLE);
-        }
     }
 
     @OnClick(R.id.settings)
     public void settings(View v){
-        final PopupMenu popupMenu = new PopupMenu(getContext(), v);
-        popupMenu.getMenuInflater().inflate(R.menu.main_settings, popupMenu.getMenu());
-
-
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch(menuItem.getItemId()){
-                    // Handle the non group menu items here
-
-                    case R.id.workout_replace:
-                        adapter.setReplaceMode(true);
-                        mode = Mode.SETTINGS;
-                        setBottomButtonParams(mode);
-                        mRealm.beginTransaction();
-                        settings.setVisibility(View.GONE);
-
-                        break;
-
-                    case R.id.generalSettings:
-                        EventBus.getDefault().post(new Events.OpenSettings());
-                        break;
-                    default:
-                        return false;
-                }
-
-                return true;
-            }
-        });
-        popupMenu.show();
-    }
-
-    private void setBottomButtonParams(Mode mode) {
-        if(mode == Mode.NORMAL){
-            bottomButtonText.setText(R.string.add_new_workout);
-            bottomButtonIcon.setImageResource(R.drawable.ic_add);
-        }
-        if(mode == Mode.SETTINGS){
-            bottomButtonText.setText(R.string.done);
-            bottomButtonIcon.setImageResource(R.drawable.ic_check_mark);
-        }
+        EventBus.getDefault().post(new Events.OpenSettings());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -13,7 +13,7 @@ public class ExerciseTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean isLongPressDragEnabled() {
-        return false;
+        return true;
     }
 
     @Override

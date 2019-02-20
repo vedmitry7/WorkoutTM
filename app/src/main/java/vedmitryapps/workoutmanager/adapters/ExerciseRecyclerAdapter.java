@@ -9,12 +9,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.shawnlin.numberpicker.NumberPicker;
@@ -24,6 +26,7 @@ import org.greenrobot.eventbus.EventBus;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import co.mobiwise.library.ProgressLayout;
+import io.realm.Realm;
 import io.realm.RealmList;
 import vedmitryapps.workoutmanager.Events;
 import vedmitryapps.workoutmanager.Mode;
@@ -38,6 +41,8 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     private RealmList<Exercise> exercises;
     Mode mode = Mode.NORMAL;
     AdapterView.OnItemClickListener mItemClickListener;
+
+    Realm realm;
 
     OnStartDragListener onStartDragListener;
 
@@ -56,7 +61,12 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
         Log.d("TAG21", "From - " + fromPosition + " to - " + toPosition);
         notifyItemMoved(fromPosition, toPosition);
+        realm.beginTransaction();
         exercises.move(fromPosition, toPosition);
+        realm.commitTransaction();
+        if(selectedItemPos==fromPosition){
+            selectedItemPos = toPosition;
+        }
         return false;
     }
 
@@ -74,20 +84,12 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         return curExPos;
     }
 
-    public void setReplaceMode(boolean b){
-        if(b){
-            mode = Mode.SETTINGS;
-        } else {
-            mode = Mode.NORMAL;
-        }
-        notifyDataSetChanged();
-    }
-
     // data is passed into the constructor
     public ExerciseRecyclerAdapter(RealmList<Exercise> data, OnStartDragListener onStartDragListener) {
         this.exercises = data;
         this.onStartDragListener = onStartDragListener;
         showNumber = SharedManager.getProperty("showNumber");
+        realm = Realm.getDefaultInstance();
     }
 
     // inflates the row layout from xml when needed
@@ -113,43 +115,19 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                 holder.exerciseNamePadding.setVisibility(View.GONE);
             }
 
-            holder.replaceIcon.setVisibility(View.GONE);
-            holder.deleteIcon.setVisibility(View.GONE);
 
             holder.progressLayout.setVisibility(View.GONE);
             holder.mainContainer.setBackgroundColor(Color.TRANSPARENT);
 
             holder.exerciseName.setTextColor(Color.parseColor("#7d8e98"));
             holder.exerciseTime.setTextColor(Color.parseColor("#7d8e98"));
-        }
-
-        if(mode == Mode.SETTINGS){
-            holder.replaceIcon.setVisibility(View.VISIBLE);
-            holder.deleteIcon.setVisibility(View.VISIBLE);
-            holder.exerciseName.setText(exercises.get(position).getName());
-            holder.selectedIcon.setVisibility(View.GONE);
-            holder.progressLayout.setVisibility(View.GONE);
-
-            holder.exerciseNamePadding.setVisibility(View.VISIBLE);
-
-            holder.replaceIcon.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        Log.d("TAG21", "action down");
-                        onStartDragListener.onStartDrag(holder);
-                    }
-                    return false;
-                }
-            });
-
+            holder.settingsButton.setVisibility(View.VISIBLE);
         }
 
         if(mode.equals(Mode.PLAYING)){
+            holder.settingsButton.setVisibility(View.GONE);
             holder.selectedIcon.setVisibility(View.GONE);
             holder.exerciseNamePadding.setVisibility(View.GONE);
-            holder.replaceIcon.setVisibility(View.GONE);
-            holder.deleteIcon.setVisibility(View.GONE);
 
             if(position<curExPos){
                 holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
@@ -231,14 +209,11 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         TextView exerciseName;
         TextView exerciseTime;
 
-        @BindView(R.id.replaceIcon)
-        ImageView replaceIcon;
-
-        @BindView(R.id.deleteIcon)
-        ImageView deleteIcon;
-
         @BindView(R.id.selectedItem)
         ImageView selectedIcon;
+
+        @BindView(R.id.settingsButton)
+        ImageView settingsButton;
 
         @BindView(R.id.rowContainer)
         ConstraintLayout mainContainer;
@@ -265,46 +240,68 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                 }
             });
 
-            deleteIcon.setOnClickListener(new View.OnClickListener() {
+            settingsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-                    LayoutInflater inflater = (LayoutInflater) itemView.getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-                    dialogBuilder.setMessage(R.string.q_delete_exercise + " " + exercises.get(getAdapterPosition()).getName() + "?");
+                public void onClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(context, v);
 
-                    dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            dialog.dismiss();
-                        }
-                    });
-                    dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            exercises.remove(getAdapterPosition());
-                            notifyItemRemoved(getAdapterPosition());
-                            if(exercises.size()==0){
-                                Log.d("TAG21", "Ex s = 0 ");
-                                EventBus.getDefault().post(new Events.ClickExercise(-1));
-                            } else {
-                                Log.d("TAG21", "Ex s not 0 ");
-                                if(selectedItemPos < exercises.size()){
-                                    Log.d("TAG21", "selectedItemPos < exercises.size() - " + exercises.size() + " a p " + getAdapterPosition());
+                    popupMenu.inflate(R.menu.exercise_menu);
 
-                                    EventBus.getDefault().post(new Events.ClickExercise(selectedItemPos));
-                                } else {
-                                    Log.d("TAG21", "selectedItemPos >= exercises.size()");
-                                    selectedItemPos=0;
-                                    EventBus.getDefault().post(new Events.ClickExercise(0));
-                                }
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()){
+                                case R.id.duplicate:
+                                    return true;
+                                case R.id.delete:
+                                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+                                    LayoutInflater inflater = (LayoutInflater) itemView.getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+                                    dialogBuilder.setMessage(context.getString(R.string.q_delete_exercise) + " " + exercises.get(getAdapterPosition()).getName() + "?");
+
+                                    dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            realm.beginTransaction();
+                                            exercises.remove(getAdapterPosition());
+                                            realm.commitTransaction();
+                                            notifyItemRemoved(getAdapterPosition());
+                                            if(exercises.size()==0){
+                                                Log.d("TAG21", "Ex s = 0 ");
+                                                EventBus.getDefault().post(new Events.ClickExercise(-1));
+                                            } else {
+                                                Log.d("TAG21", "Ex s not 0 ");
+                                                if(selectedItemPos < exercises.size()){
+                                                    Log.d("TAG21", "selectedItemPos < exercises.size() - " + exercises.size() + " a p " + getAdapterPosition());
+
+                                                    EventBus.getDefault().post(new Events.ClickExercise(selectedItemPos));
+                                                } else {
+                                                    Log.d("TAG21", "selectedItemPos >= exercises.size()");
+                                                    selectedItemPos=0;
+                                                    EventBus.getDefault().post(new Events.ClickExercise(0));
+                                                }
+                                            }
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    AlertDialog b = dialogBuilder.create();
+                                    b.show();
+                                    return true;
+                                case R.id.edit:
+                                    final Exercise exercise = exercises.get(getAdapterPosition());
+                                    EventBus.getDefault().post(exercise);
+                                    return true;
                             }
-
-                            dialog.dismiss();
+                            return false;
                         }
                     });
-                    AlertDialog b = dialogBuilder.create();
-                    b.show();
+
+                    popupMenu.show();
                 }
             });
-
         }
 
         @Override
@@ -314,11 +311,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                 EventBus.getDefault().post(new Events.ClickExercise(getAdapterPosition()));
                 selectedItemPos = itemPosition;
                 notifyDataSetChanged();
-            }
-
-            if(mode == Mode.SETTINGS){
-                final Exercise exercise = exercises.get(itemPosition);
-                EventBus.getDefault().post(exercise);
             }
         }
 

@@ -1,6 +1,5 @@
 package vedmitryapps.workoutmanager.fragments;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -62,7 +61,6 @@ public class WorkOutFragment extends Fragment  {
 
     @BindView(R.id.title)
     TextView title;
-
 
     @BindView(R.id.repeatingCount)
     TextView repeatingTextView;
@@ -291,26 +289,6 @@ public class WorkOutFragment extends Fragment  {
         if(mode.equals(Mode.NORMAL)){
             showCreateOrChangeExerciseDialog(null);
         }
-        if(mode == Mode.SETTINGS) {
-            mode = Mode.NORMAL;
-            adapter.setReplaceMode(false);
-            setBottomButtonParams(mode);
-
-            ViewGroup.LayoutParams layoutParams = panel.getLayoutParams();
-            panel.setVisibility(View.VISIBLE);
-            Log.d("TAG21", "h - " + layoutParams.height);
-            panel.setTranslationY(0);
-            Log.d("TAG21", "commitTransaction bottomButton");
-            mRealm.commitTransaction();
-            workoutSettings.setVisibility(View.VISIBLE);
-
-            Log.d("TAG23", "---------work Out");
-
-            for (int i = 0; i < workOut.getExcersices().size(); i++) {
-                Log.d("TAG23", workOut.getExcersices().get(i).getName());
-            }
-        }
-
         if(mode == Mode.PLAYING){
             showStopTrainingDialog();
         }
@@ -430,9 +408,11 @@ public class WorkOutFragment extends Fragment  {
         });
         dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if(mode == Mode.NORMAL){
+
+                mRealm.beginTransaction();
+
+                if(exercise == null){
                     Log.d("TAG21", "beginTransaction pos button");
-                    mRealm.beginTransaction();
                     String name = editText.getText().toString();
                     int timeInSeconds = numberPickerMinutes.getValue()*60 + numberPickerSeconds.getValue();
                     Exercise e = new Exercise();
@@ -449,14 +429,13 @@ public class WorkOutFragment extends Fragment  {
                     }
                     workOut.getExcersices().add(e);
                     Log.d("TAG21", "commitTransaction pos button");
-                    mRealm.commitTransaction();
                     if(workOut.getExcersices().size()==1){
                         onClickExercise(new Events.ClickExercise(0));
                     }
                     updateRecycler();
                     dialog.dismiss();
                 }
-                if(mode == Mode.SETTINGS){
+                if(exercise!=null){
                     String name = editText.getText().toString();
                     exercise.setName(name);
                     int timeInSeconds = numberPickerMinutes.getValue()*60 + numberPickerSeconds.getValue();
@@ -467,6 +446,8 @@ public class WorkOutFragment extends Fragment  {
                     adapter.notifyDataSetChanged();
                     dialog.dismiss();
                 }
+                mRealm.commitTransaction();
+
                 soundPosition = 0;
                 App.closeKeyboard(getContext());
             }
@@ -537,6 +518,28 @@ public class WorkOutFragment extends Fragment  {
                 switch(menuItem.getItemId()){
                     // Handle the non group menu items here
 
+                    case R.id.delete:
+                        AlertDialog.Builder dialogBuilder2 = new AlertDialog.Builder(getContext());
+
+                        dialogBuilder2.setMessage("Удалить " + workOut.getName() +  "?");
+
+                        dialogBuilder2.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dialog.dismiss();
+                            }
+                        });
+                        dialogBuilder2.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                mRealm.beginTransaction();
+                                workOut.deleteFromRealm();
+                                mRealm.commitTransaction();
+                                getActivity().onBackPressed();
+                                dialog.dismiss();
+                            }
+                        });
+                        dialogBuilder2.create().show();
+                        break;
+
                     case R.id.showPosition:
                         Log.d("TAG21", "click show ");
 
@@ -552,7 +555,7 @@ public class WorkOutFragment extends Fragment  {
                         adapter.notifyDataSetChanged();
 
                         break;
-                    case R.id.exercise_replace:
+                 /*   case R.id.exercise_replace:
 
                         if(mode == Mode.PLAYING){
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -608,14 +611,7 @@ public class WorkOutFragment extends Fragment  {
                            }
                        });
 
-                        adapter.setReplaceMode(true);
-                        mode = Mode.SETTINGS;
-                        setBottomButtonParams(mode);
-                        Log.d("TAG21", "beginTransaction replaceMode");
-                        mRealm.beginTransaction();
-                        workoutSettings.setVisibility(View.GONE);
-
-                        break;
+                        break;*/
 
                     case R.id.rename:
                         App.showKeyboard(getContext());
@@ -627,6 +623,7 @@ public class WorkOutFragment extends Fragment  {
 
                         final EditText editText = dialogView.findViewById(R.id.workoutName);
                         editText.setText(workOut.getName());
+                        editText.setSelection(workOut.getName().length());
 
                         dialogBuilder.setView(dialogView);
 
@@ -693,10 +690,6 @@ public class WorkOutFragment extends Fragment  {
         if(mode == Mode.NORMAL){
             bottomButtonText.setText(getString(R.string.add_new_exercise));
             bottomButtonIcon.setImageResource(R.drawable.ic_add);
-        }
-        if(mode == Mode.SETTINGS){
-            bottomButtonText.setText(getString(R.string.done));
-            bottomButtonIcon.setImageResource(R.drawable.ic_check_mark);
         }
     }
 

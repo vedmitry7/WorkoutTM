@@ -56,7 +56,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="10dp"
-            android:src="@drawable/ic_dots_vertical"
+            android:src="@drawable/ic_settings"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -86,7 +86,7 @@
                 android:id="@+id/bottomButtonIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_add" />
+                app:srcCompat="@drawable/ic_add" />
 
             <TextView
                 android:id="@+id/bottomButtonText"
