@@ -28,6 +28,7 @@ import butterknife.ButterKnife;
 import co.mobiwise.library.ProgressLayout;
 import io.realm.Realm;
 import io.realm.RealmList;
+import vedmitryapps.workoutmanager.App;
 import vedmitryapps.workoutmanager.Events;
 import vedmitryapps.workoutmanager.Mode;
 import vedmitryapps.workoutmanager.R;
@@ -252,6 +253,21 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()){
                                 case R.id.duplicate:
+                                    Log.d("TAG21", "Ex s = 0 " + getAdapterPosition());
+
+                                    realm.beginTransaction();
+                                    Exercise prototipe = exercises.get(getAdapterPosition());
+                                    Exercise exercise = new Exercise();
+                                    exercise.setId(App.getNextPeriodKey(realm));
+                                    exercise.setName(prototipe.getName());
+                                    exercise.setVibration(prototipe.isVibration());
+                                    exercise.setSound(prototipe.getSound());
+                                    exercise.setTimeInSeconds(prototipe.getTimeInSeconds());
+                                    exercises.add(getAdapterPosition(), exercise);
+                                    realm.commitTransaction();
+                                    notifyItemInserted(getAdapterPosition()+1);
+
+
                                     return true;
                                 case R.id.delete:
                                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
@@ -291,8 +307,8 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                                     b.show();
                                     return true;
                                 case R.id.edit:
-                                    final Exercise exercise = exercises.get(getAdapterPosition());
-                                    EventBus.getDefault().post(exercise);
+                                    final Exercise exercise1 = exercises.get(getAdapterPosition());
+                                    EventBus.getDefault().post(exercise1);
                                     return true;
                             }
                             return false;
