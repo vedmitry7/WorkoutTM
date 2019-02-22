@@ -120,6 +120,8 @@ public class WorkOutFragment extends Fragment  {
 
     int soundPosition = 0;
     private int repeatingCount;
+    private boolean countdownExercise = true;
+    private boolean countdownTotal = true;
 
     public static WorkOutFragment createInstance(long id) {
         WorkOutFragment fragment = new WorkOutFragment();
@@ -200,9 +202,19 @@ public class WorkOutFragment extends Fragment  {
             }
             mode = Mode.PLAYING;
             setBottomButtonParams(mode);
-            totalTime.setText(Util.secondsToTime(stepMap.get(workoutStep.getId()).getTime()) + "/" + Util.secondsToTime(Util.totalTime(workOut)));
+            if(countdownTotal){
+                totalTime.setText(Util.secondsToTime(Util.totalTime(workOut)-stepMap.get(workoutStep.getId()).getTime()) + "/" + Util.secondsToTime(Util.totalTime(workOut)));
+            } else {
+                totalTime.setText(Util.secondsToTime(stepMap.get(workoutStep.getId()).getTime()) + "/" + Util.secondsToTime(Util.totalTime(workOut)));
+            }
             exerciseName.setText(Util.getCurrentExercise(workOut, stepMap.get(workoutStep.getId()).getTime()).getName());
-            exerciseCurrentTime.setText("" + Util.getCurrentExerciseProgressString(workOut, stepMap.get(workoutStep.getId()).getTime()));
+            if(countdownExercise){
+                int res = Util.getCurrentExercise(workOut, stepMap.get(workoutStep.getId()).getTime()).getTimeInSeconds()
+                        - Util.getCurrentExerciseProgress(workOut, stepMap.get(workoutStep.getId()).getTime());
+                exerciseCurrentTime.setText(Util.secondsToTime(res));
+            } else {
+                exerciseCurrentTime.setText("" + Util.getCurrentExerciseProgressString(workOut, stepMap.get(workoutStep.getId()).getTime()));
+            }
         }
         exerciseTotalTime.setText("/" + Util.secondsToTime(Util.getCurrentExercise(workOut, stepMap.get(workoutStep.getId()).getTime()).getTimeInSeconds()));
         repeatingCount = workoutStep.getRepeating();
@@ -253,7 +265,12 @@ public class WorkOutFragment extends Fragment  {
 
         String commonTime = getString(R.string.total_time) + " ";
         totalTime.setText(commonTime + Util.secondsToTime(Util.totalTime(workOut)));
-        exerciseCurrentTime.setText("00:00");
+        if(countdownExercise){
+            exerciseCurrentTime.setText(Util.secondsToTime(workOut.getExcersices().get(event.getPosition()).getTimeInSeconds()));
+        } else {
+            exerciseCurrentTime.setText("00:00");
+        }
+
         if(event.getPosition()!=-1){
             exerciseName.setText(workOut.getExcersices().get(event.getPosition()).getName());
             exerciseTotalTime.setText("/" + Util.secondsToTime(workOut.getExcersices().get(event.getPosition()).getTimeInSeconds()));
@@ -332,7 +349,7 @@ public class WorkOutFragment extends Fragment  {
 
     @OnClick(R.id.backButton)
     public void backButton(View v){
-      getActivity().onBackPressed();
+        getActivity().onBackPressed();
     }
 
 
@@ -680,6 +697,36 @@ public class WorkOutFragment extends Fragment  {
         repeatingCount--;
         repeatingTextView.setText("R" + repeatingCount);
         EventBus.getDefault().post(new Events.Repeating(workOut.getId(), repeatingCount));
+    }
+
+    @OnClick(R.id.exerciseCurrentTime)
+    public void exerciseCurrentTimeClick(View v){
+
+        if(countdownExercise)
+            countdownExercise = false;
+        else
+            countdownExercise = true;
+
+        if(stepMap.get(workOut.getId())!=null){
+            setStepInfo(stepMap.get(workOut.getId()));
+        } else {
+            onClickExercise(new Events.ClickExercise(adapter.getSelectedItemPos()));
+        }
+    }
+
+    @OnClick(R.id.totalProgress)
+    public void totalTimeClick(View v){
+
+        if(countdownTotal)
+            countdownTotal = false;
+        else
+            countdownTotal = true;
+
+        if(stepMap.get(workOut.getId())!=null){
+            setStepInfo(stepMap.get(workOut.getId()));
+        } else {
+            onClickExercise(new Events.ClickExercise(adapter.getSelectedItemPos()));
+        }
     }
 
     private void setBottomButtonParams(Mode mode) {

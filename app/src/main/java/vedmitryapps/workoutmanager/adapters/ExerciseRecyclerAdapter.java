@@ -57,6 +57,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
     boolean showNumber;
 
+
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
 
@@ -83,6 +84,10 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
     public int getCurExPos() {
         return curExPos;
+    }
+
+    public int getSelectedItemPos() {
+        return selectedItemPos;
     }
 
     // data is passed into the constructor
