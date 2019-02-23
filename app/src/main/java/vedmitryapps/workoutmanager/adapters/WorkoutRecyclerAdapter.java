@@ -3,6 +3,7 @@ package vedmitryapps.workoutmanager.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,6 +67,9 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
 
         holder.workoutName.setText( workOuts.get(position).getName());
 
+
+        holder.cardView.setBackgroundResource(R.drawable.workout_bg);
+
         if(stepMap.containsKey(workOuts.get(position).getId())){
 
             Events.WorkoutStep workoutStep = stepMap.get(workOuts.get(position).getId());
@@ -78,7 +82,7 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
                 holder.progressLayout.setMaxProgress(Util.totalTime(workOuts.get(position)));
                 holder.progressLayout.setCurrentProgress(stepMap.get(workOuts.get(position).getId()).getTime());
 
-                holder.mainContainer.setBackgroundColor(Color.TRANSPARENT);
+                //holder.mainContainer.setBackgroundResource(R.drawable.workout_bg);
 
 
                 if(workoutStep.isPaused()){
@@ -108,11 +112,13 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
                 holder.progressLayout.setVisibility(View.GONE);
                 holder.workoutTotalTime.setText(Util.secondsToTime(workoutStep.getTime()) + "/" + Util.secondsToTime(Util.totalTime(workOuts.get(position))));
 
-                holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
+              //  holder.mainContainer.setBackgroundColor(Color.parseColor("#BBDEFB"));
+
                 holder.buttonPause.setVisibility(View.GONE);
                 holder.buttonPlay.setVisibility(View.VISIBLE);
                 holder.repeating.setVisibility(View.GONE);
 
+                holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
             }
         } else {
             //Log.d("TAG21", "not contains ");
@@ -229,8 +235,8 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         @BindView(R.id.repeating)
         TextView repeating;
 
-        @BindView(R.id.mainContainer)
-        ConstraintLayout mainContainer;
+        @BindView(R.id.cardView)
+        CardView cardView;
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -241,16 +247,17 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         public void onItemSelected() {
             Log.d("TAG21", "onItemSelected");
             mode = Mode.DRAG_AND_DROP;
-            mainContainer.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundSelected));
+          cardView.setBackgroundResource(R.drawable.workout_bg_selected);
+
         }
 
         @Override
         public void onItemClear() {
             Log.d("TAG21", "onItemClear");
-            mainContainer.setBackgroundColor(context.getResources().getColor(R.color.colorBackground));
             mode = Mode.NORMAL;
-            notifyItemChanged(fromPosition);
-            notifyItemChanged(toPosition);
+            cardView.setBackgroundResource(R.drawable.workout_bg);
+
+            notifyDataSetChanged();
         }
     }
 }

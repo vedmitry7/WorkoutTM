@@ -21,7 +21,7 @@
         android:id="@+id/toolbarLayout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/colorToolbar">
+        android:background="@color/toolbar_new">
 
 
         <ImageView
@@ -63,52 +63,57 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
+
+    <android.support.v7.widget.CardView
         android:id="@+id/bottomButton"
-        android:layout_width="match_parent"
+        app:cardBackgroundColor="#1976D2"
+        app:cardCornerRadius="16dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:background="@color/colorBlue"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_gravity="center">
 
-            <ImageView
-                android:id="@+id/bottomButtonIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:srcCompat="@drawable/ic_add" />
+        <ImageView
+            android:id="@+id/bottomButtonIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:srcCompat="@drawable/ic_add" />
 
-            <TextView
-                android:id="@+id/bottomButtonText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:layout_gravity="center"
-                android:text="@string/add_new_workout"
-                android:textColor="@android:color/white"
-                android:textSize="14dp" />
+        <TextView
+            android:id="@+id/bottomButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="8dp"
 
+            android:text="@string/add_new_workout"
+            android:textColor="@android:color/white"
+            android:textSize="14dp" />
 
         </LinearLayout>
+    </android.support.v7.widget.CardView>
 
-
-    </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/mainRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/colorBackground"
+        android:background="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/bottomButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

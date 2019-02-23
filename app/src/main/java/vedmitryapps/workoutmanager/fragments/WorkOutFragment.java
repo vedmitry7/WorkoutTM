@@ -77,9 +77,6 @@ public class WorkOutFragment extends Fragment  {
     @BindView(R.id.mainContainer)
     ConstraintLayout mainContainer;
 
-    @BindView(R.id.bottomButton)
-    ConstraintLayout bottomButton;
-
     @BindView(R.id.bottomButtonIcon)
     ImageView bottomButtonIcon;
 

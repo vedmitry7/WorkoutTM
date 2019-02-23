@@ -12,4 +12,7 @@
     <color name="colorBackgroundSelected">#263944</color>
     <color name="colorLightTextColor">#7d8e98</color>
     <color name="defaultExerciseColor">#7d8e98</color>
+    <color name="black_78">#383838</color>
+    <color name="toolbar_new">#1976D2</color>
+    <color name="blue500">#2196F3</color>
 </resources>

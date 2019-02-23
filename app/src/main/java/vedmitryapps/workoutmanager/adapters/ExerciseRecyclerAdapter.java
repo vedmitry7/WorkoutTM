@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -112,6 +113,8 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
+        holder.cardView.setBackgroundResource(R.drawable.workout_bg);
+
         if(mode.equals(Mode.NORMAL)){
             if(selectedItemPos==position){
                 holder.selectedIcon.setVisibility(View.VISIBLE);
@@ -123,10 +126,10 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
 
             holder.progressLayout.setVisibility(View.GONE);
-            holder.mainContainer.setBackgroundColor(Color.TRANSPARENT);
+        //    holder.mainContainer.setBackgroundColor(Color.TRANSPARENT);
 
-            holder.exerciseName.setTextColor(Color.parseColor("#7d8e98"));
-            holder.exerciseTime.setTextColor(Color.parseColor("#7d8e98"));
+       //     holder.exerciseName.setTextColor(Color.parseColor("#7d8e98"));
+       //     holder.exerciseTime.setTextColor(Color.parseColor("#7d8e98"));
             holder.settingsButton.setVisibility(View.VISIBLE);
         }
 
@@ -136,28 +139,31 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             holder.exerciseNamePadding.setVisibility(View.GONE);
 
             if(position<curExPos){
-                holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
+         //       holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
+                holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
             } else {
-                holder.mainContainer.setBackgroundColor(Color.TRANSPARENT);
+        //        holder.mainContainer.setBackgroundColor(Color.TRANSPARENT);
             }
             if(workoutStep!=null&& wotkout!=null){
                 if(position==curExPos){
                     Log.d("TAG21", "current exercise is - " + exercises.get(position).getName());
 
-                    holder.exerciseName.setTextColor(Color.WHITE);
-                    holder.exerciseTime.setTextColor(Color.WHITE);
+            //        holder.exerciseName.setTextColor(Color.WHITE);
+            //        holder.exerciseTime.setTextColor(Color.WHITE);
                     holder.progressLayout.setVisibility(View.VISIBLE);
                     holder.progressLayout.setMaxProgress(exercises.get(position).getTimeInSeconds());
                     holder.progressLayout.setCurrentProgress(Util.getCurrentExerciseProgress(wotkout, workoutStep.getTime()));
 
                     if(workoutStep.isFinished()){
                         holder.progressLayout.setVisibility(View.GONE);
-                        holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
+                     //   holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
+                        holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
+
                     }
                 } else {
                     holder.progressLayout.setVisibility(View.GONE);
-                    holder.exerciseName.setTextColor(Color.parseColor("#7d8e98"));
-                    holder.exerciseTime.setTextColor(Color.parseColor("#7d8e98"));
+            //        holder.exerciseName.setTextColor(Color.parseColor("#7d8e98"));
+            //        holder.exerciseTime.setTextColor(Color.parseColor("#7d8e98"));
                 }
             }
         }
@@ -221,14 +227,15 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         @BindView(R.id.settingsButton)
         ImageView settingsButton;
 
-        @BindView(R.id.rowContainer)
-        ConstraintLayout mainContainer;
 
         @BindView(R.id.progressLayout)
         ProgressLayout progressLayout;
 
         @BindView(R.id.exerciseNamePadding)
         View exerciseNamePadding;
+
+        @BindView(R.id.cardView)
+        CardView cardView;
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -337,12 +344,10 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
         @Override
         public void onItemSelected() {
-            mainContainer.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundSelected));
         }
 
         @Override
         public void onItemClear() {
-            mainContainer.setBackgroundColor(context.getResources().getColor(R.color.colorBackground));
 
         }
     }
