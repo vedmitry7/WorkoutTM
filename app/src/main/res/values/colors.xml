@@ -9,6 +9,7 @@
     <color name="colorToolbar">#36474f</color>
     <color name="colorToolbar50">#7f36474f</color>
     <color name="colorBackground">#273238</color>
+    <color name="colorBackgroundSelected">#263944</color>
     <color name="colorLightTextColor">#7d8e98</color>
     <color name="defaultExerciseColor">#7d8e98</color>
 </resources>

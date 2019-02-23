@@ -337,10 +337,13 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
         @Override
         public void onItemSelected() {
+            mainContainer.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundSelected));
         }
 
         @Override
         public void onItemClear() {
+            mainContainer.setBackgroundColor(context.getResources().getColor(R.color.colorBackground));
+
         }
     }
 

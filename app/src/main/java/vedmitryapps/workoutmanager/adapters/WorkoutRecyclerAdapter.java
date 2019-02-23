@@ -240,14 +240,14 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         @Override
         public void onItemSelected() {
             Log.d("TAG21", "onItemSelected");
-            workoutName.setTextColor(Color.RED);
             mode = Mode.DRAG_AND_DROP;
+            mainContainer.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundSelected));
         }
 
         @Override
         public void onItemClear() {
             Log.d("TAG21", "onItemClear");
-            workoutName.setTextColor(Color.WHITE);
+            mainContainer.setBackgroundColor(context.getResources().getColor(R.color.colorBackground));
             mode = Mode.NORMAL;
             notifyItemChanged(fromPosition);
             notifyItemChanged(toPosition);
