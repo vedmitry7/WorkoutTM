@@ -50,6 +50,7 @@ import vedmitryapps.workoutmanager.adapters.ExerciseRecyclerAdapter;
 import vedmitryapps.workoutmanager.adapters.OnStartDragListener;
 import vedmitryapps.workoutmanager.R;
 import vedmitryapps.workoutmanager.Util;
+import vedmitryapps.workoutmanager.adapters.RecyclerViewBottomMargin;
 import vedmitryapps.workoutmanager.adapters.SoundRecyclerAdapter;
 import vedmitryapps.workoutmanager.models.Exercise;
 import vedmitryapps.workoutmanager.models.WorkOut;
@@ -106,6 +107,7 @@ public class WorkOutFragment extends Fragment  {
     RealmResults<Exercise> exercises;
 
     ExerciseRecyclerAdapter adapter;
+    ExerciseTouchHelperCallback callback;
 
     Mode mode = Mode.NORMAL;
 
@@ -119,6 +121,8 @@ public class WorkOutFragment extends Fragment  {
     private int repeatingCount;
     private boolean countdownExercise = true;
     private boolean countdownTotal = true;
+
+    LinearLayoutManager layoutManager;
 
     public static WorkOutFragment createInstance(long id) {
         WorkOutFragment fragment = new WorkOutFragment();
@@ -150,7 +154,8 @@ public class WorkOutFragment extends Fragment  {
         title.setText(workOut.getName());
         totalTime.setText("Общее время: " + Util.secondsToTime(Util.totalTime(workOut)));
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         adapter = new ExerciseRecyclerAdapter(workOut.getExcersices(), new OnStartDragListener() {
             @Override
@@ -158,7 +163,11 @@ public class WorkOutFragment extends Fragment  {
                 itemTouchHelper.startDrag(viewHolder);
             }
         });
-        ItemTouchHelper.Callback callback = new ExerciseTouchHelperCallback(adapter);
+
+        RecyclerViewBottomMargin decoration = new RecyclerViewBottomMargin(64);
+        recyclerView.addItemDecoration(decoration);
+
+        callback = new ExerciseTouchHelperCallback(adapter);
         itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(adapter);
@@ -186,6 +195,7 @@ public class WorkOutFragment extends Fragment  {
         if(workoutStep.isFinished() || workoutStep.isItterapted()){
             mode = Mode.NORMAL;
             setBottomButtonParams(mode);
+            callback.setDragEnabled(true);
 
             onClickExercise(new Events.ClickExercise(adapter.getStartPosition()));
 
@@ -199,6 +209,7 @@ public class WorkOutFragment extends Fragment  {
             }
             mode = Mode.PLAYING;
             setBottomButtonParams(mode);
+            callback.setDragEnabled(false);
             if(countdownTotal){
                 totalTime.setText(Util.secondsToTime(Util.totalTime(workOut)-stepMap.get(workoutStep.getId()).getTime()) + "/" + Util.secondsToTime(Util.totalTime(workOut)));
             } else {
@@ -239,7 +250,6 @@ public class WorkOutFragment extends Fragment  {
             setStepInfo(stepMap.get(workout.getId()));
             adapter.update(workOut, stepMap.get(workout.getId()));
 
-            recyclerView.scrollToPosition(adapter.getCurExPos());
         }
 
 

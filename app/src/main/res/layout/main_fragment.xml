@@ -113,8 +113,8 @@
         android:id="@+id/mainRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/bottomButton"
+        android:background="#FcFcFc"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarLayout" />

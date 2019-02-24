@@ -6,6 +6,15 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 public class ExerciseTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private final ExerciseRecyclerAdapter mAdapter;
+    private boolean dragEnabled = true;
+
+    public boolean isDragEnabled() {
+        return dragEnabled;
+    }
+
+    public void setDragEnabled(boolean dragEnabled) {
+        this.dragEnabled = dragEnabled;
+    }
 
     public ExerciseTouchHelperCallback(ExerciseRecyclerAdapter adapter) {
         mAdapter = adapter;
@@ -13,7 +22,7 @@ public class ExerciseTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean isLongPressDragEnabled() {
-        return true;
+        return dragEnabled;
     }
 
     @Override

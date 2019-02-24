@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.provider.SyncStateContract;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
@@ -71,7 +72,7 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
     // total number of rows
     @Override
     public int getItemCount() {
-        return 3;
+        return Constants.soundsTitle.length;
     }
 
     public String getSoundName() {

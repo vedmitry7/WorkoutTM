@@ -39,6 +39,7 @@ import vedmitryapps.workoutmanager.Events;
 import vedmitryapps.workoutmanager.Mode;
 import vedmitryapps.workoutmanager.Storage;
 import vedmitryapps.workoutmanager.adapters.OnStartDragListener;
+import vedmitryapps.workoutmanager.adapters.RecyclerViewBottomMargin;
 import vedmitryapps.workoutmanager.adapters.WorkoutRecyclerAdapter;
 import vedmitryapps.workoutmanager.R;
 import vedmitryapps.workoutmanager.adapters.WorkoutTouchHelperCallback;
@@ -130,6 +131,10 @@ public class MainFragment extends Fragment {
         itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
         recyclerView.setAdapter(adapter);
+
+        RecyclerViewBottomMargin decoration = new RecyclerViewBottomMargin(64);
+        recyclerView.addItemDecoration(decoration);
+
     }
 
     @OnClick(R.id.bottomButton)

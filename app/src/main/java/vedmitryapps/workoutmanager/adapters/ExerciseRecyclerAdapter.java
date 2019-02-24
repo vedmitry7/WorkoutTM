@@ -114,7 +114,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
         holder.cardView.setBackgroundResource(R.drawable.workout_bg);
-
+        Log.d("TAG21", "bind  =  " + position);
         if(mode.equals(Mode.NORMAL)){
             if(selectedItemPos==position){
                 holder.selectedIcon.setVisibility(View.VISIBLE);
@@ -158,7 +158,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                         holder.progressLayout.setVisibility(View.GONE);
                      //   holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
                         holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
-
                     }
                 } else {
                     holder.progressLayout.setVisibility(View.GONE);
@@ -218,7 +217,9 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener, ItemTouchHelperViewHolder{
+        @BindView(R.id.exerciseName)
         TextView exerciseName;
+        @BindView(R.id.exerciseTime)
         TextView exerciseTime;
 
         @BindView(R.id.selectedItem)
@@ -240,8 +241,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            exerciseName = itemView.findViewById(R.id.exerciseName);
-            exerciseTime = itemView.findViewById(R.id.exerciseTime);
 
             itemView.setOnClickListener(this);
 
@@ -256,6 +255,8 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             settingsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    final int position = getAdapterPosition();
                     PopupMenu popupMenu = new PopupMenu(context, v);
 
                     popupMenu.inflate(R.menu.exercise_menu);
@@ -294,9 +295,9 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                                     dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int whichButton) {
                                             realm.beginTransaction();
-                                            exercises.remove(getAdapterPosition());
+                                            exercises.remove(position);
                                             realm.commitTransaction();
-                                            notifyItemRemoved(getAdapterPosition());
+                                            notifyItemRemoved(position);
                                             if(exercises.size()==0){
                                                 Log.d("TAG21", "Ex s = 0 ");
                                                 EventBus.getDefault().post(new Events.ClickExercise(-1));
@@ -304,15 +305,23 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                                                 Log.d("TAG21", "Ex s not 0 ");
                                                 if(selectedItemPos < exercises.size()){
                                                     Log.d("TAG21", "selectedItemPos < exercises.size() - " + exercises.size() + " a p " + getAdapterPosition());
-
                                                     EventBus.getDefault().post(new Events.ClickExercise(selectedItemPos));
+
                                                 } else {
                                                     Log.d("TAG21", "selectedItemPos >= exercises.size()");
                                                     selectedItemPos=0;
+
                                                     EventBus.getDefault().post(new Events.ClickExercise(0));
                                                 }
                                             }
                                             dialog.dismiss();
+
+                                            if(selectedItemPos == position){
+                                                Log.d("TAG21", "eq");
+
+                                                selectedItemPos = 0;
+                                                notifyItemChanged(selectedItemPos);
+                                            }
                                         }
                                     });
                                     AlertDialog b = dialogBuilder.create();
@@ -344,10 +353,15 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
         @Override
         public void onItemSelected() {
+
+            cardView.setBackgroundResource(R.drawable.workout_bg_selected);
+
         }
 
         @Override
         public void onItemClear() {
+            cardView.setBackgroundResource(R.drawable.workout_bg);
+            notifyDataSetChanged();
 
         }
     }
