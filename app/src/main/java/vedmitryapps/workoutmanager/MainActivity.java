@@ -52,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements Storage{
         transaction.replace(R.id.fragmentContainer, mainFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+
+        if(getIntent()!=null && getIntent().getLongExtra("id", -1) != -1){
+                      openWorkout(new Events.OpenWorkout(getIntent().getLongExtra("id", -1)));
+        }
     }
 
 

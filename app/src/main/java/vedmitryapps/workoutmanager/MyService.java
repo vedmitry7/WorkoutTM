@@ -262,6 +262,7 @@ public class MyService extends Service {
                         .setContentText(workOut.getName()
                         );
         Intent resultIntent = new Intent(this, MainActivity.class);
+        resultIntent.putExtra("id", workOut.getId());
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);
