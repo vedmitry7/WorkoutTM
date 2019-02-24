@@ -23,4 +23,6 @@
     <string name="stop_workout_to_make_change">Stop workout to make changes</string>
     <string name="total_time">Total time: </string>
     <string name="q_delete_exercise">"Delete "</string>
+    <string name="pause" translatable="false">Pause</string>
+    <string name="continueWorkout" translatable="false">Continue</string>
 </resources>
