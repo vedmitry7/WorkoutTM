@@ -24,9 +24,11 @@ import butterknife.ButterKnife;
 import co.mobiwise.library.ProgressLayout;
 import io.realm.Realm;
 import io.realm.RealmList;
+import vedmitryapps.workoutmanager.Constants;
 import vedmitryapps.workoutmanager.Events;
 import vedmitryapps.workoutmanager.Mode;
 import vedmitryapps.workoutmanager.R;
+import vedmitryapps.workoutmanager.SharedManager;
 import vedmitryapps.workoutmanager.Util;
 import vedmitryapps.workoutmanager.models.WorkOut;
 
@@ -42,6 +44,8 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
     Realm realm;
     private int fromPosition;
     private int toPosition;
+
+    String progress;
 
     // data is passed into the constructor
     public WorkoutRecyclerAdapter(RealmList<WorkOut> data, Map stepMap, OnStartDragListener onStartDragListener) {
@@ -74,8 +78,15 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
 
             Events.WorkoutStep workoutStep = stepMap.get(workOuts.get(position).getId());
 
+            if(!SharedManager.getProperty(Constants.KEY_COUNTDOWN_TOTAL_DISABLED)){
+                progress =  Util.secondsToTime(Util.totalTime(workOuts.get(position))-stepMap.get(workoutStep.getId()).getTime()) + "/" + Util.secondsToTime(Util.totalTime(workOuts.get(position)));
+            } else {
+                progress = Util.secondsToTime(stepMap.get(workoutStep.getId()).getTime()) + "/" + Util.secondsToTime(Util.totalTime(workOuts.get(position)));
+            }
+
+
             if(!workoutStep.isFinished()){
-                holder.workoutTotalTime.setText(Util.secondsToTime(workoutStep.getTime()) + "/" + Util.secondsToTime(Util.totalTime(workOuts.get(position))));
+                holder.workoutTotalTime.setText(progress);
 
                 holder.exerciseName.setText(Util.getCurrentExercise(workOuts.get(position), stepMap.get(workOuts.get(position).getId()).getTime()).getName());
                 holder.progressLayout.setVisibility(View.VISIBLE);
@@ -110,7 +121,7 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
             } else {
                 holder.exerciseName.setText("Finished");
                 holder.progressLayout.setVisibility(View.GONE);
-                holder.workoutTotalTime.setText(Util.secondsToTime(workoutStep.getTime()) + "/" + Util.secondsToTime(Util.totalTime(workOuts.get(position))));
+                holder.workoutTotalTime.setText(progress);
 
               //  holder.mainContainer.setBackgroundColor(Color.parseColor("#BBDEFB"));
 

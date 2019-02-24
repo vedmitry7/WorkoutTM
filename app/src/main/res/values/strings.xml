@@ -25,4 +25,7 @@
     <string name="q_delete_exercise">"Delete "</string>
     <string name="pause" translatable="false">Pause</string>
     <string name="continueWorkout" translatable="false">Continue</string>
+    <string name="notifications">Notifications</string>
+    <string name="finished">Finished</string>
+    <string name="notif_time">Progress time in notification</string>
 </resources>

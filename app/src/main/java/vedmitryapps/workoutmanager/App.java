@@ -1,11 +1,15 @@
 package vedmitryapps.workoutmanager;
 
+import android.app.ActivityManager;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.ads.MobileAds;
+
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -25,6 +29,18 @@ public class App extends Application {
                 .build();
         Realm.setDefaultConfiguration(config);
         SharedManager.init(this);
+    }
+
+    public static boolean isAppForground(Context mContext) {
+        ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
+        if (!tasks.isEmpty()) {
+            ComponentName topActivity = tasks.get(0).topActivity;
+            if (!topActivity.getPackageName().equals(mContext.getPackageName())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static int dpToPx(Context context, int dp) {

@@ -1,5 +1,6 @@
 package vedmitryapps.workoutmanager.fragments;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -119,8 +120,8 @@ public class WorkOutFragment extends Fragment  {
 
     int soundPosition = 0;
     private int repeatingCount;
-    private boolean countdownExercise = true;
-    private boolean countdownTotal = true;
+    private boolean countdownExercise;
+    private boolean countdownTotal;
 
     LinearLayoutManager layoutManager;
 
@@ -144,6 +145,9 @@ public class WorkOutFragment extends Fragment  {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        countdownExercise = !SharedManager.getProperty(Constants.KEY_COUNTDOWN_EX_DISABLED);
+        countdownTotal = !SharedManager.getProperty(Constants.KEY_COUNTDOWN_TOTAL_DISABLED);
 
         SharedManager.init(getContext());
 
@@ -331,6 +335,9 @@ public class WorkOutFragment extends Fragment  {
         dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 EventBus.getDefault().post(new Events.StopWorkout(workOut.getId()));
+                NotificationManager notificationManager =
+                        (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel((int) workOut.getId());
                 dialog.dismiss();
             }
         });
@@ -709,10 +716,14 @@ public class WorkOutFragment extends Fragment  {
     @OnClick(R.id.exerciseCurrentTime)
     public void exerciseCurrentTimeClick(View v){
 
-        if(countdownExercise)
+        if(countdownExercise){
             countdownExercise = false;
-        else
+            SharedManager.addProperty(Constants.KEY_COUNTDOWN_EX_DISABLED, true);
+        }
+        else {
             countdownExercise = true;
+            SharedManager.addProperty(Constants.KEY_COUNTDOWN_EX_DISABLED, false);
+        }
 
         if(stepMap.get(workOut.getId())!=null){
             setStepInfo(stepMap.get(workOut.getId()));
@@ -724,10 +735,14 @@ public class WorkOutFragment extends Fragment  {
     @OnClick(R.id.totalProgress)
     public void totalTimeClick(View v){
 
-        if(countdownTotal)
+        if(countdownTotal){
             countdownTotal = false;
-        else
+            SharedManager.addProperty(Constants.KEY_COUNTDOWN_TOTAL_DISABLED, true);
+        }
+        else{
             countdownTotal = true;
+            SharedManager.addProperty(Constants.KEY_COUNTDOWN_TOTAL_DISABLED, false);
+        }
 
         if(stepMap.get(workOut.getId())!=null){
             setStepInfo(stepMap.get(workOut.getId()));

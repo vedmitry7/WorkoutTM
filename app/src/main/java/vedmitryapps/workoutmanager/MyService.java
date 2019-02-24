@@ -1,6 +1,5 @@
 package vedmitryapps.workoutmanager;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -11,23 +10,18 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.RemoteInput;
 import android.util.Log;
-import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import io.realm.Realm;
-import io.realm.RealmList;
-import vedmitryapps.workoutmanager.models.Exercise;
 import vedmitryapps.workoutmanager.models.WorkOut;
 
 public class MyService extends Service {
@@ -164,6 +158,11 @@ public class MyService extends Service {
                     //to show if app was foreground before
                 }
 
+                if(!App.isAppForground(getApplicationContext())){
+                    finishedStepMap.put(step.getId(), step);
+                    EventBus.getDefault().postSticky(finishedStepMap);
+                }
+
                 EventBus.getDefault().post(step);
                 Realm mRealm = Realm.getDefaultInstance();
                 sendNotification(step);
@@ -227,27 +226,44 @@ public class MyService extends Service {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void sendNotification(Events.WorkoutStep workoutStep) {
+
+        if (SharedManager.getProperty(Constants.KEY_NOTIFICATION_DISABLED)){
+            return;
+        }
+
         Realm mRealm = Realm.getDefaultInstance();
 
         WorkOut workOut = mRealm.where(WorkOut.class).equalTo("id", workoutStep.getId()).findFirst();
 
+        String title;
+        if(!SharedManager.getProperty(Constants.KEY_NOTIFICATION_TIME_DISABLED)){
+            String progress;
+            if(!SharedManager.getProperty(Constants.KEY_COUNTDOWN_EX_DISABLED)){
+                int res = Util.getCurrentExercise(workOut, workoutStep.getTime()).getTimeInSeconds()
+                        - Util.getCurrentExerciseProgress(workOut, workoutStep.getTime());
+                progress = Util.secondsToTime(res);
+            } else {
+                progress = Util.getCurrentExerciseProgressString(workOut, workoutStep.getTime());
+            }
+
+            String exTime = progress + "/" +
+                    Util.secondsToTime(Util.getCurrentExercise(workOut, workoutStep.getTime()).getTimeInSeconds());
+
+            title = exTime + " " + Util.getCurrentExercise(workOut, workoutStep.getTime()).getName();
+        } else {
+            title = Util.getCurrentExercise(workOut, workoutStep.getTime()).getName();
+        }
+
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_add)
-                        .setContentTitle(Util.getCurrentExercise(workOut, workoutStep.getTime()).getName())
+                        .setContentTitle(title)
                         .setContentText(workOut.getName()
                         );
-// Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, MainActivity.class);
-
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack for the Intent (but not the Intent itself)
         stackBuilder.addParentStack(MainActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(
@@ -263,58 +279,29 @@ public class MyService extends Service {
             intent.setAction("pause");
         }
 
-
         intent.putExtra("id", workOut.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-
-//This Intent will be called when Notification will be clicked by user.
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request
-  code */, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 , intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-//This Intent will be called when Confirm button from notification will be
-//clicked by user.
         PendingIntent continuePI = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-//This Intent will be called when Cancel button from notification will be
-//clicked by user.
-
-        if(workoutStep.isPaused()){
-            mBuilder.addAction(R.drawable.ic_add, getString(R.string.continueWorkout), continuePI);
+        if(!workoutStep.isFinished()){
+            if(workoutStep.isPaused()){
+                mBuilder.addAction(R.drawable.ic_add, getString(R.string.continueWorkout), continuePI);
+            } else {
+                mBuilder.addAction(R.drawable.ic_dots_vertical, getString(R.string.pause), continuePI);
+            }
+            int PROGRESS_MAX = Util.getCurrentExercise(workOut, workoutStep.getTime()).getTimeInSeconds();
+            int PROGRESS_CURRENT = Util.getCurrentExerciseProgress(workOut, workoutStep.getTime());
+            mBuilder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false);
         } else {
-            mBuilder.addAction(R.drawable.ic_dots_vertical, getString(R.string.pause), continuePI);
+            mBuilder.setContentTitle(getString(R.string.finished));
         }
 
-    /*    Intent intent = new Intent(this, MyService.class);
-        intent.setAction("pause");
-        intent.putExtra("id", workOut.getId());
-
-// PendingIntent
-        PendingIntent replyPendingIntent =
-                PendingIntent.getService(getApplicationContext(),
-                        (int) workOut.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-// RemoteInput
-        RemoteInput remoteInput = new RemoteInput.Builder("pausE")
-                .setLabel("Pause")
-                .build();
-
-// Action
-        NotificationCompat.Action action =
-                new NotificationCompat.Action.Builder(android.R.drawable.ic_menu_send,
-                        "PausE", replyPendingIntent)
-                        .addRemoteInput(remoteInput)
-                        .build();
-
-        mBuilder.addAction(action);*/
-
-        int PROGRESS_MAX = Util.getCurrentExercise(workOut, workoutStep.getTime()).getTimeInSeconds();
-        int PROGRESS_CURRENT = Util.getCurrentExerciseProgress(workOut, workoutStep.getTime());
-        mBuilder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-// mId allows you to update the notification later on.
         mNotificationManager.notify((int) workOut.getId(), mBuilder.build());
     }
 }

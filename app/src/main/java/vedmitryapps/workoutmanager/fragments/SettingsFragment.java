@@ -33,6 +33,12 @@ public class SettingsFragment extends Fragment {
     @BindView(R.id.switchVibration)
     Switch switchVibration;
 
+    @BindView(R.id.switchNotification)
+    Switch switchNotification;
+
+    @BindView(R.id.switchNotificationTime)
+    Switch switchNotificationTime;
+
     @BindView(R.id.defaultSoundContainer)
     ConstraintLayout sound;
 
@@ -55,6 +61,20 @@ public class SettingsFragment extends Fragment {
         switchVibration.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SharedManager.addProperty(Constants.KEY_DEF_VIBRATION, isChecked);
+            }
+        });
+
+
+        switchNotification.setChecked(!SharedManager.getProperty(Constants.KEY_NOTIFICATION_DISABLED));
+        switchNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedManager.addProperty(Constants.KEY_NOTIFICATION_DISABLED, !isChecked);
+            }
+        });
+        switchNotificationTime.setChecked(!SharedManager.getProperty(Constants.KEY_NOTIFICATION_TIME_DISABLED));
+        switchNotificationTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedManager.addProperty(Constants.KEY_NOTIFICATION_TIME_DISABLED, !isChecked);
             }
         });
     }

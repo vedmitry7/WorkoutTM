@@ -20,10 +20,6 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         if (intent.getAction().equalsIgnoreCase("continue")) {
             EventBus.getDefault().post(new Events.StartWorkout(id, 0));
 
-/*            NotificationManager notificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel((int) id);*/
-
         }
     }
 }

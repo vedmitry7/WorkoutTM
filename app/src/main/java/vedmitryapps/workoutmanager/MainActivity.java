@@ -79,14 +79,16 @@ public class MainActivity extends AppCompatActivity implements Storage{
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onStart(Map<Long, Events.WorkoutStep> finishedStepMap) {
-        Log.d("TAG21", " -------- STICKY! Finished workout ");
+        Log.d("TAG21", " -------- STICKY!");
 
         for (Map.Entry item : finishedStepMap.entrySet())
         {
             stepMap.put((Long) item.getKey(), (Events.WorkoutStep) item.getValue());
             Log.d("TAG21", " -------- Finished workout " + item.getKey() + " step - " + (item.getValue()));
             EventBus.getDefault().post(new Events.UpdateWorkout((Long) item.getKey()));
-            EventBus.getDefault().post(new Events.DeleteFromFinished((Long) item.getKey()));
+            if(((Events.WorkoutStep) item.getValue()).isFinished()){
+                EventBus.getDefault().post(new Events.DeleteFromFinished((Long) item.getKey()));
+            }
         }
     }
 
