@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements Storage{
 
     Map<Long, Events.WorkoutStep> stepMap = new HashMap();
     MainFragment mainFragment;
+    private boolean fromNotif;
 
 
     @Override
@@ -49,11 +50,12 @@ public class MainActivity extends AppCompatActivity implements Storage{
         mainFragment = new MainFragment();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentContainer, mainFragment);
+        transaction.add(R.id.fragmentContainer, mainFragment);
         transaction.addToBackStack(null);
         transaction.commit();
 
         if(getIntent()!=null && getIntent().getLongExtra("id", -1) != -1){
+                fromNotif = true;
                       openWorkout(new Events.OpenWorkout(getIntent().getLongExtra("id", -1)));
         }
     }
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements Storage{
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onStart(Map<Long, Events.WorkoutStep> finishedStepMap) {
         Log.d("TAG21", " -------- STICKY!");
+        Log.d("TAG25", " -------- STICKY!");
 
         for (Map.Entry item : finishedStepMap.entrySet())
         {
@@ -125,6 +128,13 @@ public class MainActivity extends AppCompatActivity implements Storage{
         super.onResume();
         if (mAdView != null)
             mAdView.resume();
+        Log.d("TAG25", " resume!");
+
+
+        if(EventBus.getDefault().getStickyEvent(Map.class)!=null){
+            onStart(EventBus.getDefault().getStickyEvent(Map.class));
+        }
+
     }
 
     @Override

@@ -21,4 +21,9 @@
     <string name="stop_workout_to_make_change">Остановите тренировку чтобы внести изменения</string>
     <string name="total_time">Общее время: </string>
     <string name="q_delete_exercise">Вы действительно хотите удалить</string>
+    <string name="pause">Пауза</string>
+    <string name="continueWorkout">Продолжить</string>
+    <string name="notifications">Уведомления</string>
+    <string name="finished">Завершено</string>
+    <string name="notif_time">Время в уведомлении</string>
 </resources>

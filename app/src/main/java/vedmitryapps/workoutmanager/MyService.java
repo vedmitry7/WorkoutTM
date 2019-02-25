@@ -80,7 +80,11 @@ public class MyService extends Service {
         Events.WorkoutStep step = new Events.WorkoutStep(workout.getId(), (int) progress.get(workout.getId()));
         step.setPaused(true);
         EventBus.getDefault().post(step);
-        sendNotification(step);
+        sendNotification(step, null);
+        if(!App.isAppForground(getApplicationContext())){
+            finishedStepMap.put(step.getId(), step);
+            EventBus.getDefault().postSticky(finishedStepMap);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -165,9 +169,13 @@ public class MyService extends Service {
 
                 EventBus.getDefault().post(step);
                 Realm mRealm = Realm.getDefaultInstance();
-                sendNotification(step);
                 WorkOut workOut1 = mRealm.where(WorkOut.class).equalTo("id", id).findFirst();
-
+                if(workOut1 == null){
+                    Log.d("TAG21", " WWWWWWWWWW - NULL!!!!!!!!!");
+                } else {
+                    Log.d("TAG21", " WWWWWWWWWW - NOT NULL");
+                }
+                sendNotification(step, workOut1);
 
                 for (int i = 0; i < workOut1.getExcersices().size(); i++) {
                     Log.d("TAG23", workOut1.getExcersices().get(i).getName());
@@ -225,15 +233,20 @@ public class MyService extends Service {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void sendNotification(Events.WorkoutStep workoutStep) {
+    public void sendNotification(Events.WorkoutStep workoutStep, WorkOut workOut) {
 
         if (SharedManager.getProperty(Constants.KEY_NOTIFICATION_DISABLED)){
             return;
         }
 
-        Realm mRealm = Realm.getDefaultInstance();
+     //   Realm mRealm = Realm.getDefaultInstance();
 
-        WorkOut workOut = mRealm.where(WorkOut.class).equalTo("id", workoutStep.getId()).findFirst();
+       // WorkOut workOut = mRealm.where(WorkOut.class).equalTo("id", workoutStep.getId()).findFirst();
+
+        if(workOut==null){
+            workOut = mRealm.where(WorkOut.class).equalTo("id", workoutStep.getId()).findFirst();
+          //  Log.d("TAG21", String.valueOf(workOut == null)  +  " workout null ? " );
+        }
 
         String title;
         if(!SharedManager.getProperty(Constants.KEY_NOTIFICATION_TIME_DISABLED)){
@@ -272,6 +285,7 @@ public class MyService extends Service {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
+        Log.d("TAG25", workoutStep.getId() + " Is paused  " + workoutStep.isPaused());
 
         Intent intent = new Intent(this, NotificationActionReceiver.class);
         if(workoutStep.isPaused()){

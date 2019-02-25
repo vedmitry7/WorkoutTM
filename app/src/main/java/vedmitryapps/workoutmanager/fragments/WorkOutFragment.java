@@ -351,7 +351,9 @@ public class WorkOutFragment extends Fragment  {
     @OnClick(R.id.buttonPlay)
     public void onClickPlay(View v){
         if(workOut.getExcersices()!=null && workOut.getExcersices().size()!=0){
-            EventBus.getDefault().post(new Events.StartWorkout(workOut.getId(), Util.getStartingTime(workOut, adapter.getStartPosition())));
+            Log.d("TAG21", "size - " + workOut.getExcersices().size());
+            EventBus.getDefault().post(new Events.StartWorkout(workOut.getId(),
+                    Util.getStartingTime(workOut, adapter.getStartPosition())));
             showPause();
         } else {
             Toast.makeText(getContext(), getString(R.string.nothing_to_play), Toast.LENGTH_SHORT).show();
@@ -375,7 +377,8 @@ public class WorkOutFragment extends Fragment  {
 
         App.showKeyboard(getContext());
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        LayoutInflater inflater = (LayoutInflater) getContext()
+                .getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         final View dialogView = inflater.inflate(R.layout.create_period_dialog_layout, null);
         dialogBuilder.setView(dialogView);
 
@@ -481,6 +484,8 @@ public class WorkOutFragment extends Fragment  {
                     dialog.dismiss();
                 }
                 mRealm.commitTransaction();
+                Log.d("TAG21", "WORKOUT EXS size - " + workOut.getExcersices().size());
+
 
                 soundPosition = 0;
                 App.closeKeyboard(getContext());
@@ -587,66 +592,7 @@ public class WorkOutFragment extends Fragment  {
                             SharedManager.addProperty("showNumber", true);
                         }
                         adapter.notifyDataSetChanged();
-
                         break;
-                 /*   case R.id.exercise_replace:
-
-                        if(mode == Mode.PLAYING){
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder
-                                    .setMessage(R.string.stop_workout_to_make_change)
-                                    .setNegativeButton(R.string.ok,
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.cancel();
-                                                }
-                                            });
-                            AlertDialog alert = builder.create();
-                            alert.show();
-
-                            return true;
-                        }
-
-                        ViewGroup.LayoutParams layoutParams = panel.getLayoutParams();
-
-                        recyclerView.animate().translationY(-layoutParams.height).setDuration(200).setListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animator) {
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animator) {
-                                recyclerView.setTranslationY(0);
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animator) {
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animator) {
-                            }
-                        });
-                        panel.animate().translationY(-layoutParams.height).setDuration(200).setListener(new Animator.AnimatorListener() {
-                           @Override
-                           public void onAnimationStart(Animator animator) {
-                           }
-                           @Override
-                           public void onAnimationEnd(Animator animator) {
-                                panel.setVisibility(View.GONE);
-                           }
-
-                           @Override
-                           public void onAnimationCancel(Animator animator) {
-                           }
-
-                           @Override
-                           public void onAnimationRepeat(Animator animator) {
-                           }
-                       });
-
-                        break;*/
-
                     case R.id.rename:
                         App.showKeyboard(getContext());
                         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());

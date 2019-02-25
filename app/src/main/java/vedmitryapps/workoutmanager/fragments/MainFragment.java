@@ -36,7 +36,6 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import vedmitryapps.workoutmanager.App;
 import vedmitryapps.workoutmanager.Events;
-import vedmitryapps.workoutmanager.Mode;
 import vedmitryapps.workoutmanager.Storage;
 import vedmitryapps.workoutmanager.adapters.OnStartDragListener;
 import vedmitryapps.workoutmanager.adapters.RecyclerViewBottomMargin;
@@ -85,38 +84,17 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("TAG21", "MainFragment onViewCreated ");
 
         mRealm = Realm.getDefaultInstance();
-        WorkOut workOut;
-
-   /*     mRealm.beginTransaction();
-        for (int i = 0; i < 10; i++) {
-            workOut = mRealm.createObject(WorkOut.class, App.getNextWorkoutId(mRealm));
-            workOut.setName("Workout " + (i+1));
-        }
-        mRealm.commitTransaction();*/
 
         godObject = mRealm.where(GodObject.class).findFirst();
         if(godObject==null){
-            Log.d("TAG21", "God object = null");
             mRealm.beginTransaction();
             godObject = mRealm.createObject(GodObject.class, 0);
             mRealm.commitTransaction();
-        } else {
-            Log.d("TAG21", "God object = exist");
         }
 
         workOuts = godObject.getWorkouts();
-        //workOuts = mRealm.where(WorkOut.class).findAll();
-
-       /* mRealm.beginTransaction();
-        for (WorkOut w:workOuts
-             ) {
-            w.deleteFromRealm();
-            //  Log.d("TAG21", "WorkOut - " + w.getName());
-        }
-        mRealm.commitTransaction();*/
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);

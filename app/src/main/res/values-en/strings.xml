@@ -21,4 +21,9 @@
     <string name="stop_workout_to_make_change">Stop workout to make changes</string>
     <string name="total_time">Total time: </string>
     <string name="q_delete_exercise">"Delete "</string>
+    <string name="pause">Pause</string>
+    <string name="continueWorkout">Continue</string>
+    <string name="notifications">Notifications</string>
+    <string name="finished">Finished</string>
+    <string name="notif_time">Progress time in notification</string>
 </resources>
