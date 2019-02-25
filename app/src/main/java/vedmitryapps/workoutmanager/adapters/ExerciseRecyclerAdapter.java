@@ -131,6 +131,10 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
        //     holder.exerciseName.setTextColor(Color.parseColor("#7d8e98"));
        //     holder.exerciseTime.setTextColor(Color.parseColor("#7d8e98"));
             holder.settingsButton.setVisibility(View.VISIBLE);
+
+            if(workoutStep!=null && wotkout!=null && workoutStep.isFinished()){
+                holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
+            }
         }
 
         if(mode.equals(Mode.PLAYING)){
@@ -144,7 +148,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             } else {
         //        holder.mainContainer.setBackgroundColor(Color.TRANSPARENT);
             }
-            if(workoutStep!=null&& wotkout!=null){
+            if(workoutStep!=null && wotkout!=null){
                 if(position==curExPos){
                     Log.d("TAG21", "current exercise is - " + exercises.get(position).getName());
 
@@ -276,10 +280,9 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                                     exercise.setVibration(prototipe.isVibration());
                                     exercise.setSound(prototipe.getSound());
                                     exercise.setTimeInSeconds(prototipe.getTimeInSeconds());
-                                    exercises.add(getAdapterPosition(), exercise);
+                                    exercises.add(getAdapterPosition()+1, exercise);
                                     realm.commitTransaction();
-                                    notifyItemInserted(getAdapterPosition()+1);
-
+                                    notifyDataSetChanged();
 
                                     return true;
                                 case R.id.delete:

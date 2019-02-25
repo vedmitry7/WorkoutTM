@@ -275,16 +275,19 @@ public class WorkOutFragment extends Fragment  {
         Log.d("TAG21", "Click Ex " + event.getPosition());
 
         String commonTime = getString(R.string.total_time) + " ";
-        totalTime.setText(commonTime + Util.secondsToTime(Util.totalTime(workOut)));
-        if(countdownExercise){
-            exerciseCurrentTime.setText(Util.secondsToTime(workOut.getExcersices().get(event.getPosition()).getTimeInSeconds()));
-        } else {
-            exerciseCurrentTime.setText("00:00");
-        }
+
 
         if(event.getPosition()!=-1){
             exerciseName.setText(workOut.getExcersices().get(event.getPosition()).getName());
             exerciseTotalTime.setText("/" + Util.secondsToTime(workOut.getExcersices().get(event.getPosition()).getTimeInSeconds()));
+
+            totalTime.setText(commonTime + Util.secondsToTime(Util.totalTime(workOut)));
+            if(countdownExercise){
+                exerciseCurrentTime.setText(Util.secondsToTime(workOut.getExcersices().get(event.getPosition()).getTimeInSeconds()));
+            } else {
+                exerciseCurrentTime.setText("00:00");
+            }
+
         } else {
             totalTime.setText(commonTime + "00:00");
             exerciseName.setText("");
