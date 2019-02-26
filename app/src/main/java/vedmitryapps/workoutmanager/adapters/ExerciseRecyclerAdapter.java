@@ -283,6 +283,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                                     exercises.add(getAdapterPosition()+1, exercise);
                                     realm.commitTransaction();
                                     notifyDataSetChanged();
+                                    EventBus.getDefault().post(new Events.ClickExercise(selectedItemPos));
 
                                     return true;
                                 case R.id.delete:
