@@ -28,4 +28,5 @@
     <string name="notifications">Notifications</string>
     <string name="finished">Finished</string>
     <string name="notif_time">Progress time in notification</string>
+    <string name="black">Black</string>
 </resources>

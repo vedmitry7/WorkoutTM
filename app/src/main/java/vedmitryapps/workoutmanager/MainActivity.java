@@ -1,12 +1,19 @@
 package vedmitryapps.workoutmanager;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -20,7 +27,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
 import vedmitryapps.workoutmanager.fragments.MainFragment;
 import vedmitryapps.workoutmanager.fragments.SettingsFragment;
 import vedmitryapps.workoutmanager.fragments.WorkOutFragment;
@@ -40,6 +46,11 @@ public class MainActivity extends AppCompatActivity implements Storage{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setStatusBar(new Events.SetStatusBar());
+        }
+
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Intent intent = new Intent(this, MyService.class);
         startService(intent);
@@ -55,8 +66,27 @@ public class MainActivity extends AppCompatActivity implements Storage{
         transaction.commit();
 
         if(getIntent()!=null && getIntent().getLongExtra("id", -1) != -1){
-                fromNotif = true;
-                      openWorkout(new Events.OpenWorkout(getIntent().getLongExtra("id", -1)));
+            fromNotif = true;
+            openWorkout(new Events.OpenWorkout(getIntent().getLongExtra("id", -1)));
+        }
+
+
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void setStatusBar(Events.SetStatusBar event) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if(SharedManager.getProperty(Constants.KEY_BLACK_ENABLED)){
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorToolbar));
+        } else {
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.toolbar_new));
         }
     }
 

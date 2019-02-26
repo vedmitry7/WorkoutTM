@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -35,7 +36,9 @@ import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmList;
 import vedmitryapps.workoutmanager.App;
+import vedmitryapps.workoutmanager.Constants;
 import vedmitryapps.workoutmanager.Events;
+import vedmitryapps.workoutmanager.SharedManager;
 import vedmitryapps.workoutmanager.Storage;
 import vedmitryapps.workoutmanager.adapters.OnStartDragListener;
 import vedmitryapps.workoutmanager.adapters.RecyclerViewBottomMargin;
@@ -58,6 +61,12 @@ public class MainFragment extends Fragment {
 
     @BindView(R.id.settings)
     ImageView settings;
+
+    @BindView(R.id.toolbarLayout)
+    ConstraintLayout toolbar;
+
+    @BindView(R.id.mainContainer)
+    ConstraintLayout mainContainer;
 
     Realm mRealm;
 
@@ -84,6 +93,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        initColors();
 
         mRealm = Realm.getDefaultInstance();
 
@@ -112,6 +123,17 @@ public class MainFragment extends Fragment {
 
         RecyclerViewBottomMargin decoration = new RecyclerViewBottomMargin(64);
         recyclerView.addItemDecoration(decoration);
+
+    }
+
+    private void initColors() {
+        if(SharedManager.getProperty(Constants.KEY_BLACK_ENABLED)){
+            toolbar.setBackgroundColor(getResources().getColor(R.color.colorToolbar));
+            mainContainer.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+        } else {
+            toolbar.setBackgroundColor(getResources().getColor(R.color.toolbar_new));
+            mainContainer.setBackgroundColor(getResources().getColor(R.color.background_new));
+        }
 
     }
 

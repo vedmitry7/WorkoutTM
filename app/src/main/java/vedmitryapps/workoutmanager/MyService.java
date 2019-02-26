@@ -28,18 +28,13 @@ public class MyService extends Service {
 
 
     Timer timer;
-    TimerTask tTask;
     long interval = 1000;
-
     Realm mRealm = Realm.getDefaultInstance();
-
     Map workouts = new HashMap<Long, TimerTask>();
     Map progress = new HashMap<Long, Integer>();
     Map repeat = new HashMap<Long, Integer>();
-
     Context context;
     Map<Long, Events.WorkoutStep> finishedStepMap = new HashMap();
-
 
     public void onCreate() {
         super.onCreate();
@@ -59,8 +54,6 @@ public class MyService extends Service {
             Log.d("TAG23", "Start - pr was not null");
             startWorkout(workout.getId(), false);
         }
-
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -69,7 +62,6 @@ public class MyService extends Service {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPause(Events.PauseWorkout workout) {
         Log.d("TAG21", "Pause - " + workout.getId());
@@ -232,7 +224,6 @@ public class MyService extends Service {
         super.onDestroy();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void sendNotification(Events.WorkoutStep workoutStep, WorkOut workOut) {
 
         if (SharedManager.getProperty(Constants.KEY_NOTIFICATION_DISABLED)){

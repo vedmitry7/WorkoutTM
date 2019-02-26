@@ -30,6 +30,7 @@ import co.mobiwise.library.ProgressLayout;
 import io.realm.Realm;
 import io.realm.RealmList;
 import vedmitryapps.workoutmanager.App;
+import vedmitryapps.workoutmanager.Constants;
 import vedmitryapps.workoutmanager.Events;
 import vedmitryapps.workoutmanager.Mode;
 import vedmitryapps.workoutmanager.R;
@@ -58,6 +59,17 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
     boolean showNumber;
 
+    boolean black;
+
+    public ExerciseRecyclerAdapter(RealmList<Exercise> data, OnStartDragListener onStartDragListener) {
+        this.exercises = data;
+        this.onStartDragListener = onStartDragListener;
+        showNumber = SharedManager.getProperty("showNumber");
+        realm = Realm.getDefaultInstance();
+
+        black = SharedManager.getProperty(Constants.KEY_BLACK_ENABLED);
+
+    }
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
@@ -90,14 +102,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     public int getSelectedItemPos() {
         return selectedItemPos;
     }
-
     // data is passed into the constructor
-    public ExerciseRecyclerAdapter(RealmList<Exercise> data, OnStartDragListener onStartDragListener) {
-        this.exercises = data;
-        this.onStartDragListener = onStartDragListener;
-        showNumber = SharedManager.getProperty("showNumber");
-        realm = Realm.getDefaultInstance();
-    }
 
     // inflates the row layout from xml when needed
     @Override
@@ -114,6 +119,18 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
         holder.cardView.setBackgroundResource(R.drawable.workout_bg);
+
+        if(black){
+            holder.cardView.setBackgroundResource(R.drawable.workout_bg_black);
+            holder.exerciseName.setTextColor(context.getResources().getColor(R.color.white_95));
+            holder.exerciseTime.setTextColor(context.getResources().getColor(R.color.white_95));
+            holder.settingsButton.setColorFilter(context.getResources().getColor(R.color.white_95));
+        } else {
+            holder.cardView.setBackgroundResource(R.drawable.workout_bg);
+            holder.exerciseName.setTextColor(context.getResources().getColor(R.color.black_78));
+            holder.settingsButton.setColorFilter(context.getResources().getColor(R.color.black_78));
+        }
+
         Log.d("TAG21", "bind  =  " + position);
         if(mode.equals(Mode.NORMAL)){
             if(selectedItemPos==position){
@@ -144,7 +161,11 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
             if(position<curExPos){
          //       holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
-                holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
+                if(black){
+                    holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished_black);
+                } else {
+                    holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
+                }
             } else {
         //        holder.mainContainer.setBackgroundColor(Color.TRANSPARENT);
             }
@@ -161,7 +182,11 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                     if(workoutStep.isFinished()){
                         holder.progressLayout.setVisibility(View.GONE);
                      //   holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
-                        holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
+                        if(black){
+                            holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished_black);
+                        } else {
+                            holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
+                        }
                     }
                 } else {
                     holder.progressLayout.setVisibility(View.GONE);

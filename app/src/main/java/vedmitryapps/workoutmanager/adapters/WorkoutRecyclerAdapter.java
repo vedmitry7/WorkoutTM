@@ -1,13 +1,10 @@
 package vedmitryapps.workoutmanager.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -47,12 +44,16 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
 
     String progress;
 
+    boolean black;
+
     // data is passed into the constructor
     public WorkoutRecyclerAdapter(RealmList<WorkOut> data, Map stepMap, OnStartDragListener onStartDragListener) {
         this.workOuts = data;
         this.stepMap = stepMap;
         this.onStartDragListener = onStartDragListener;
         realm = Realm.getDefaultInstance();
+
+        black = SharedManager.getProperty(Constants.KEY_BLACK_ENABLED);
     }
 
     // inflates the row layout from xml when needed
@@ -72,7 +73,22 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         holder.workoutName.setText( workOuts.get(position).getName());
 
 
-        holder.cardView.setBackgroundResource(R.drawable.workout_bg);
+        if(black){
+            holder.cardView.setBackgroundResource(R.drawable.workout_bg_black);
+            holder.workoutName.setTextColor(context.getResources().getColor(R.color.white_95));
+            holder.exerciseName.setTextColor(context.getResources().getColor(R.color.white_95));
+            holder.repeating.setTextColor(context.getResources().getColor(R.color.white_95));
+            holder.workoutTotalTime.setTextColor(context.getResources().getColor(R.color.white_95));
+            holder.buttonPlay.setColorFilter(context.getResources().getColor(R.color.white_95));
+            holder.buttonPause.setColorFilter(context.getResources().getColor(R.color.white_95));
+        } else {
+            holder.cardView.setBackgroundResource(R.drawable.workout_bg);
+            holder.exerciseName.setTextColor(context.getResources().getColor(R.color.black_78));
+            holder.repeating.setTextColor(context.getResources().getColor(R.color.black_78));
+            holder.workoutTotalTime.setTextColor(context.getResources().getColor(R.color.black_78));
+            holder.buttonPlay.setColorFilter(context.getResources().getColor(R.color.black_78));
+            holder.buttonPause.setColorFilter(context.getResources().getColor(R.color.black_78));
+        }
 
         if(stepMap.containsKey(workOuts.get(position).getId())){
 
@@ -129,7 +145,11 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
                 holder.buttonPlay.setVisibility(View.VISIBLE);
                 holder.repeating.setVisibility(View.GONE);
 
-                holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
+                if(black){
+                    holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished_black);
+                } else {
+                    holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
+                }
             }
         } else {
             //Log.d("TAG21", "not contains ");

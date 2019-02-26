@@ -346,4 +346,7 @@ public class Events {
 
     public static class OpenSettings {
     }
+
+    public static class SetStatusBar {
+    }
 }

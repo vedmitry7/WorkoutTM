@@ -3,6 +3,7 @@ package vedmitryapps.workoutmanager.fragments;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -94,11 +95,22 @@ public class WorkOutFragment extends Fragment  {
     @BindView(R.id.workoutSettings)
     ImageView workoutSettings;
 
+    @BindView(R.id.plusButton)
+    ImageView plusButton;
+
+    @BindView(R.id.minusButton)
+    ImageView minusButton;
+
     @BindView(R.id.exerciseCurrentTime)
     TextView exerciseCurrentTime;
 
     @BindView(R.id.exerciseTotalTime)
     TextView exerciseTotalTime;
+
+    @BindView(R.id.toolbarLayout)
+    ConstraintLayout toolbar;
+    @BindView(R.id.view)
+    View view;
 
     TextView soundName;
 
@@ -145,6 +157,9 @@ public class WorkOutFragment extends Fragment  {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        initColors();
 
         countdownExercise = !SharedManager.getProperty(Constants.KEY_COUNTDOWN_EX_DISABLED);
         countdownTotal = !SharedManager.getProperty(Constants.KEY_COUNTDOWN_TOTAL_DISABLED);
@@ -193,6 +208,41 @@ public class WorkOutFragment extends Fragment  {
             buttonPlay.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void initColors() {
+        if(SharedManager.getProperty(Constants.KEY_BLACK_ENABLED)){
+            int color = getContext().getResources().getColor(R.color.white_95);
+
+            toolbar.setBackgroundColor(getResources().getColor(R.color.colorToolbar));
+            mainContainer.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+            totalTime.setTextColor(color);
+            exerciseCurrentTime.setTextColor(color);
+            exerciseName.setTextColor(color);
+            exerciseTotalTime.setTextColor(color);
+            repeatingTextView.setTextColor(color);
+            buttonPlay.setColorFilter(color);
+            buttonPause.setColorFilter(color);
+            plusButton.setColorFilter(color);
+            minusButton.setColorFilter(color);
+            view.setBackgroundColor(color);
+
+        } else {
+            int color = getContext().getResources().getColor(R.color.black_78);
+            toolbar.setBackgroundColor(getResources().getColor(R.color.toolbar_new));
+            mainContainer.setBackgroundColor(getResources().getColor(R.color.background_new));
+            totalTime.setTextColor(color);
+            totalTime.setTextColor(color);
+            exerciseCurrentTime.setTextColor(color);
+            exerciseName.setTextColor(color);
+            exerciseTotalTime.setTextColor(color);
+            repeatingTextView.setTextColor(color);
+            buttonPlay.setColorFilter(color);
+            buttonPause.setColorFilter(color);
+            plusButton.setColorFilter(color);
+            minusButton.setColorFilter(color);
+            view.setBackgroundColor(color);
+        }
     }
 
     private void setStepInfo(Events.WorkoutStep workoutStep) {
