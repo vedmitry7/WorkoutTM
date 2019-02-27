@@ -150,7 +150,11 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             holder.settingsButton.setVisibility(View.VISIBLE);
 
             if(workoutStep!=null && wotkout!=null && workoutStep.isFinished()){
-                holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
+                if(black){
+                    holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished_black);
+                } else {
+                    holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
+                }
             }
         }
 
