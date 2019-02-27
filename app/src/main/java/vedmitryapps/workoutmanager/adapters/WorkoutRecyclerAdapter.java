@@ -66,7 +66,6 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         return new ViewHolder(view);
     }
 
-    // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
@@ -109,7 +108,6 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
                 holder.progressLayout.setMaxProgress(Util.totalTime(workOuts.get(position)));
                 holder.progressLayout.setCurrentProgress(stepMap.get(workOuts.get(position).getId()).getTime());
 
-                //holder.mainContainer.setBackgroundResource(R.drawable.workout_bg);
 
 
                 if(workoutStep.isPaused()){
@@ -132,15 +130,10 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
                     holder.repeating.setVisibility(View.VISIBLE);
                     holder.repeating.setText("R" + workoutStep.getRepeating());
                 }
-
-
             } else {
                 holder.exerciseName.setText("Finished");
                 holder.progressLayout.setVisibility(View.GONE);
                 holder.workoutTotalTime.setText(progress);
-
-              //  holder.mainContainer.setBackgroundColor(Color.parseColor("#BBDEFB"));
-
                 holder.buttonPause.setVisibility(View.GONE);
                 holder.buttonPlay.setVisibility(View.VISIBLE);
                 holder.repeating.setVisibility(View.GONE);
@@ -152,7 +145,6 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
                 }
             }
         } else {
-            //Log.d("TAG21", "not contains ");
             holder.progressLayout.setVisibility(View.GONE);
             holder.workoutTotalTime.setText(Util.secondsToTime(Util.totalTime(workOuts.get(position))));
             holder.exerciseName.setText("");
@@ -162,20 +154,8 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         }
 
         if(mode == Mode.DRAG_AND_DROP){
-
             holder.buttonPlay.setVisibility(View.GONE);
             holder.buttonPause.setVisibility(View.GONE);
-
-            /*holder.replaceIcon.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        Log.d("TAG21", "action down");
-                        onStartDragListener.onStartDrag(holder);
-                    }
-                    return false;
-                }
-            });*/
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -188,18 +168,16 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         holder.buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("TAG21", "click start");
                 if(workOuts.get(position).getExcersices().size()!=0)
                     EventBus.getDefault().post(new Events.StartWorkout(workOuts.get(position).getId(), 0));
                 else
-                    Toast.makeText(holder.itemView.getContext(), "Нечего проигрывать", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(holder.itemView.getContext(), context.getResources().getString(R.string.nothing_to_play), Toast.LENGTH_SHORT).show();
             }
         });
 
         holder.buttonPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("TAG21", "click pause");
                 EventBus.getDefault().post(new Events.PauseWorkout(workOuts.get(position).getId()));
             }
         });
@@ -220,7 +198,6 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        Log.d("TAG21", "Ws.From - " + fromPosition + " to - " + toPosition);
         notifyItemMoved(fromPosition, toPosition);
         realm.beginTransaction();
         workOuts.move(fromPosition, toPosition);
@@ -232,17 +209,12 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
 
     @Override
     public void onItemDismiss(int position) {
-        Log.d("TAG21", "onItemDismiss");
-
     }
 
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-        Log.d("TAG21", "onStartDrag");
-
     }
 
-    // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder  implements ItemTouchHelperViewHolder{
 
         @BindView(R.id.text)
@@ -276,7 +248,6 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
 
         @Override
         public void onItemSelected() {
-            Log.d("TAG21", "onItemSelected");
             mode = Mode.DRAG_AND_DROP;
           cardView.setBackgroundResource(R.drawable.workout_bg_selected);
 
@@ -284,10 +255,8 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
 
         @Override
         public void onItemClear() {
-            Log.d("TAG21", "onItemClear");
             mode = Mode.NORMAL;
             cardView.setBackgroundResource(R.drawable.workout_bg);
-
             notifyDataSetChanged();
         }
     }

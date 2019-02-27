@@ -2,7 +2,6 @@ package vedmitryapps.workoutmanager.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -10,26 +9,20 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -52,12 +45,6 @@ public class MainFragment extends Fragment {
 
     @BindView(R.id.mainRecyclerView)
     RecyclerView recyclerView;
-
-/*    @BindView(R.id.bottomButtonIcon)
-    ImageView bottomButtonIcon;
-
-    @BindView(R.id.bottomButtonText)
-    TextView bottomButtonText;*/
 
     @BindView(R.id.settings)
     ImageView settings;
@@ -178,7 +165,6 @@ public class MainFragment extends Fragment {
                                 godObject.getWorkouts().add(workOut);
                                 mRealm.commitTransaction();
                                 adapter.notifyDataSetChanged();
-                                Log.d("TAG21", " w s" + workOuts.size());
                                 b.dismiss();
                                 App.closeKeyboard(getContext());
                             }
@@ -198,7 +184,6 @@ public class MainFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateWorkout(Events.UpdateWorkout workout) {
-        Log.d("TAG21", "UpdateWorkout - " + workout.getId());
 
         stepMap = storage.getState();
 
@@ -207,7 +192,6 @@ public class MainFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void deleteWorkout(Events.DeleteWorkout event) {
-        Log.d("TAG21", "Event - " + event.getPosition());
         workOuts.remove(event.getPosition());
     }
 

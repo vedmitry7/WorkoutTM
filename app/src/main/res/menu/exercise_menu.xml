@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/edit"
-        android:title="Изменить"
+        android:title="@string/edit"
         />
     <item
         android:id="@+id/duplicate"
-        android:title="Дублировать"
+        android:title="@string/duplicate"
         />
     <item
         android:id="@+id/delete"
-        android:title="Удалить"
+        android:title="@string/delete"
         />
 </menu>

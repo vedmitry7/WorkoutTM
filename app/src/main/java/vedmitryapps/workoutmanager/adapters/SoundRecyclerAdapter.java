@@ -43,8 +43,6 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
 
 
     Context context;
-
-
     int selectedPosition = 0;
 
     @Override
@@ -56,7 +54,6 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
         return new ViewHolder(view);
     }
 
-    // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
@@ -69,7 +66,6 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
         }
     }
 
-    // total number of rows
     @Override
     public int getItemCount() {
         return Constants.soundsTitle.length;
@@ -92,8 +88,6 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
         notifyDataSetChanged();
     }
 
-
-    // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.soundName)
@@ -118,14 +112,12 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
                         notifyDataSetChanged();
                         return;
                     }
-
                     MediaPlayer mp;
                     mp = new MediaPlayer();
                     AssetFileDescriptor afd = null;
                     try {
                         afd = context.getAssets().openFd(Constants.soundsName[selectedPosition]);
                         mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                        //mp.setVolume(1f, 1f);
                         mp.prepare();
                         mp.start();
                     } catch (IOException e) {

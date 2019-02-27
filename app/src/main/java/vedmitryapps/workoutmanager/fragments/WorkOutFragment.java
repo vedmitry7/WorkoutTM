@@ -3,11 +3,8 @@ package vedmitryapps.workoutmanager.fragments;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -117,7 +114,6 @@ public class WorkOutFragment extends Fragment  {
     Realm mRealm;
 
     WorkOut workOut;
-    RealmResults<Exercise> exercises;
 
     ExerciseRecyclerAdapter adapter;
     ExerciseTouchHelperCallback callback;
@@ -157,21 +153,16 @@ public class WorkOutFragment extends Fragment  {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         initColors();
-
         countdownExercise = !SharedManager.getProperty(Constants.KEY_COUNTDOWN_EX_DISABLED);
         countdownTotal = !SharedManager.getProperty(Constants.KEY_COUNTDOWN_TOTAL_DISABLED);
 
         SharedManager.init(getContext());
 
-        Log.d("TAG21", "Workout onViewCreated ");
         mRealm = Realm.getDefaultInstance();
         workOut = mRealm.where(WorkOut.class).equalTo("id", getArguments().getLong("id")).findFirst();
 
         title.setText(workOut.getName());
-        totalTime.setText("Общее время: " + Util.secondsToTime(Util.totalTime(workOut)));
 
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -192,17 +183,14 @@ public class WorkOutFragment extends Fragment  {
         recyclerView.setAdapter(adapter);
 
         if(stepMap.containsKey(workOut.getId())){
-            Log.d("TAG21", "Workout Step contains it");
             Events.WorkoutStep workoutStep = stepMap.get(workOut.getId());
             setStepInfo(workoutStep);
             adapter.update(workOut, stepMap.get(workoutStep.getId()));
         } else {
             if(workOut.getExcersices().size()==0){
-                Log.d("TAG21", "workOut.getExcersices().size() - " + workOut.getExcersices().size());
                 onClickExercise(new Events.ClickExercise(-1));
             }
             else {
-                Log.d("TAG21", "workOut.getExcersices().size() - " + workOut.getExcersices().size());
                 onClickExercise(new Events.ClickExercise(0));
             }
             buttonPlay.setVisibility(View.VISIBLE);
@@ -254,7 +242,6 @@ public class WorkOutFragment extends Fragment  {
             onClickExercise(new Events.ClickExercise(adapter.getStartPosition()));
 
             showPlay();
-            Log.d("TAG21", "buttonPause gone");
         } else {
             if(workoutStep.isPaused()){
                 showPlay();
@@ -284,49 +271,35 @@ public class WorkOutFragment extends Fragment  {
     }
 
     void showPause(){
-        Log.d("TAG21", "buttonPause vis");
         buttonPlay.setVisibility(View.GONE);
         buttonPause.setVisibility(View.VISIBLE);
     }
     void showPlay(){
-        Log.d("TAG21", "buttonPlay vis");
         buttonPlay.setVisibility(View.VISIBLE);
         buttonPause.setVisibility(View.GONE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStep(Events.UpdateWorkout workout) {
-        Log.d("TAG21", "UpdateWorkout from WF- " + workout.getId());
-
         if(workout.getId()==workOut.getId()){
             stepMap = storage.getState();
-
             setStepInfo(stepMap.get(workout.getId()));
             adapter.update(workOut, stepMap.get(workout.getId()));
-
         }
-
-
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onStep(Events.UpdateWorkoutSticky workout) {
-        Log.d("TAG21", "STICKY " + workout.getId());
         Events.UpdateWorkoutSticky stickyEvent = EventBus.getDefault().getStickyEvent(Events.UpdateWorkoutSticky.class);
         if(stickyEvent != null) {
             EventBus.getDefault().removeStickyEvent(stickyEvent);
-            Log.d("TAG21", "delete sticky");
         }
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onClickExercise(Events.ClickExercise event) {
-        Log.d("TAG21", "Click Ex " + event.getPosition());
-
         String commonTime = getString(R.string.total_time) + " ";
-
-
         if(event.getPosition()!=-1){
             exerciseName.setText(workOut.getExcersices().get(event.getPosition()).getName());
             exerciseTotalTime.setText("/" + Util.secondsToTime(workOut.getExcersices().get(event.getPosition()).getTimeInSeconds()));
@@ -343,11 +316,8 @@ public class WorkOutFragment extends Fragment  {
             exerciseName.setText("");
             exerciseTotalTime.setText("/00:00");
         }
-
         totalTime.setText(commonTime + Util.secondsToTime(Util.totalTime(workOut)));
-
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -362,11 +332,8 @@ public class WorkOutFragment extends Fragment  {
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @OnClick(R.id.bottomButton)
     public void onClickBottomButton(View v){
-        Log.d("TAG21", "Click");
-
         if(mode.equals(Mode.NORMAL)){
             showCreateOrChangeExerciseDialog(null);
         }
@@ -401,7 +368,6 @@ public class WorkOutFragment extends Fragment  {
     @OnClick(R.id.buttonPlay)
     public void onClickPlay(View v){
         if(workOut.getExcersices()!=null && workOut.getExcersices().size()!=0){
-            Log.d("TAG21", "size - " + workOut.getExcersices().size());
             EventBus.getDefault().post(new Events.StartWorkout(workOut.getId(),
                     Util.getStartingTime(workOut, adapter.getStartPosition())));
             showPause();
@@ -477,7 +443,6 @@ public class WorkOutFragment extends Fragment  {
         soundContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("TAG21", "click show ");
                 if(finalExercise ==null){
                     showChooseSoundDialog(null);
                 }
@@ -499,7 +464,6 @@ public class WorkOutFragment extends Fragment  {
                 mRealm.beginTransaction();
 
                 if(exercise == null){
-                    Log.d("TAG21", "beginTransaction pos button");
                     String name = editText.getText().toString();
                     int timeInSeconds = numberPickerMinutes.getValue()*60 + numberPickerSeconds.getValue();
                     Exercise e = new Exercise();
@@ -509,13 +473,10 @@ public class WorkOutFragment extends Fragment  {
                     e.setSound(soundPosition);
                     e.setVibration(vibrationCheckBox.isChecked());
                     if(workOut.getExcersices()==null){
-                        Log.d("TAG21", "Workout list = null. Add new one.");
                         workOut.setExcersices(new RealmList<Exercise>());
                     } else {
-                        Log.d("TAG21", "Workout list not null");
                     }
                     workOut.getExcersices().add(e);
-                    Log.d("TAG21", "commitTransaction pos button");
                     if(workOut.getExcersices().size()==1){
                         onClickExercise(new Events.ClickExercise(0));
                     }
@@ -529,14 +490,10 @@ public class WorkOutFragment extends Fragment  {
                     exercise.setTimeInSeconds(timeInSeconds);
                     exercise.setSound(soundPosition);
                     exercise.setVibration(vibrationCheckBox.isChecked());
-
                     adapter.notifyDataSetChanged();
                     dialog.dismiss();
                 }
                 mRealm.commitTransaction();
-                Log.d("TAG21", "WORKOUT EXS size - " + workOut.getExcersices().size());
-
-
                 soundPosition = 0;
                 App.closeKeyboard(getContext());
             }
@@ -547,18 +504,13 @@ public class WorkOutFragment extends Fragment  {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void showChooseSoundDialog(Events.ChooseSound event) {
-
-        Log.d("TAG21", "click show sound dialog");
-
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         final View dialogView = inflater.inflate(R.layout.choose_sound_dialog_layout, null);
         dialogBuilder.setView(dialogView);
 
         final RecyclerView recyclerView = dialogView.findViewById(R.id.soundRecyclerView);
-
         final SoundRecyclerAdapter adapter = new SoundRecyclerAdapter();
-
 
         if(event!=null){
             soundPosition = event.getExercise().getSound();
@@ -594,23 +546,17 @@ public class WorkOutFragment extends Fragment  {
         final PopupMenu popupMenu = new PopupMenu(getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.workout_settings, popupMenu.getMenu());
 
-        final boolean showNumber = SharedManager.getProperty("showNumber");
-        Log.d("TAG21", "show - " + showNumber);
-
+        final boolean showNumber = SharedManager.getProperty(Constants.KEY_SHOW_POSITION);
         final MenuItem showNumberMenuItem = popupMenu.getMenu().findItem(R.id.showPosition);
-
         showNumberMenuItem.setChecked(showNumber);
-
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch(menuItem.getItemId()){
-                    // Handle the non group menu items here
-
                     case R.id.delete:
                         AlertDialog.Builder dialogBuilder2 = new AlertDialog.Builder(getContext());
 
-                        dialogBuilder2.setMessage("Удалить " + workOut.getName() +  "?");
+                        dialogBuilder2.setMessage(getResources().getString(R.string.delete) + " " + workOut.getName() +  "?");
 
                         dialogBuilder2.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -630,16 +576,15 @@ public class WorkOutFragment extends Fragment  {
                         break;
 
                     case R.id.showPosition:
-                        Log.d("TAG21", "click show ");
 
                         if(showNumber){
                             showNumberMenuItem.setChecked(false);
                             adapter.setShowNumber(false);
-                            SharedManager.addProperty("showNumber", false);
+                            SharedManager.addProperty(Constants.KEY_SHOW_POSITION, false);
                         } else {
                             showNumberMenuItem.setChecked(true);
                             adapter.setShowNumber(true);
-                            SharedManager.addProperty("showNumber", true);
+                            SharedManager.addProperty(Constants.KEY_SHOW_POSITION, true);
                         }
                         adapter.notifyDataSetChanged();
                         break;
@@ -663,19 +608,17 @@ public class WorkOutFragment extends Fragment  {
                                 dialog.dismiss();
                             }
                         });
-                        dialogBuilder.setPositiveButton("Ок", new DialogInterface.OnClickListener() {
+                        dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String name = editText.getText().toString();
                                 if(!name.equals("")){
-                                    Log.d("TAG21", "beginTransaction rename");
                                     mRealm.beginTransaction();
                                     workOut.setName(name);
-                                    Log.d("TAG21", "commitTransaction rename");
                                     mRealm.commitTransaction();
                                     title.setText(name);
                                     dialog.dismiss();
                                 } else {
-                                    Toast.makeText(getContext(), "Name can not be empty", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), getString(R.string.name_cant_be_empty), Toast.LENGTH_SHORT).show();
                                 }
 
                                 App.closeKeyboard(getContext());
@@ -763,25 +706,17 @@ public class WorkOutFragment extends Fragment  {
 
     @Override
     public void onResume() {
-        Log.d("TAG21", "on resume");
-
         Events.UpdateWorkoutSticky stickyEvent = EventBus.getDefault().getStickyEvent(Events.UpdateWorkoutSticky.class);
         if(stickyEvent != null) {
 
             if(stickyEvent.getId()==workOut.getId()){
-                Log.d("TAG21", "update with sticky");
                 stepMap = storage.getState();
-
                 setStepInfo(stepMap.get(stickyEvent.getId()));
                 adapter.update(workOut, stepMap.get(stickyEvent.getId()));
             }
 
             EventBus.getDefault().removeStickyEvent(stickyEvent);
-            Log.d("TAG21", "delete sticky");
-        } else {
-            Log.d("TAG21", "sticky null");
         }
-
         super.onResume();
     }
 
@@ -789,8 +724,6 @@ public class WorkOutFragment extends Fragment  {
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-
-
     }
 
     @Override
@@ -801,5 +734,4 @@ public class WorkOutFragment extends Fragment  {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
-
 }

@@ -38,7 +38,7 @@
             app:np_selectedTextSize="30dp"
             app:np_textColor="@color/colorPrimary"
             app:np_textSize="30dp"
-            app:np_value="3"
+            app:np_value="2"
             app:np_width="48dp" />
 
         <TextView
@@ -47,9 +47,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:text="минут"
+            android:text="@string/minutes"
             android:textColor="@color/colorBlue"
-            android:textSize="20dp"
+            android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/numberPicker"
             app:layout_constraintTop_toTopOf="parent" />
@@ -73,7 +73,7 @@
             app:np_selectedTextSize="30dp"
             app:np_textColor="@color/colorPrimary"
             app:np_textSize="30dp"
-            app:np_value="3"
+            app:np_value="0"
             app:np_width="48dp" />
 
         <TextView
@@ -82,9 +82,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
-            android:text="секунд"
+            android:text="@string/seconds"
             android:textColor="@color/colorBlue"
-            android:textSize="20dp"
+            android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/numberPicker2"
             app:layout_constraintTop_toTopOf="parent"
@@ -102,7 +102,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Название"
+        android:hint="@string/name"
         android:inputType="textPersonName"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
@@ -125,7 +125,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
-            android:text="Звук"
+            android:text="@string/sound"
             android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -137,7 +137,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:layout_marginRight="24dp"
-            android:text="Bell"
+            android:text=""
             android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -159,7 +159,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
-            android:text="Вибрация"
+            android:text="@string/vibration"
             android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

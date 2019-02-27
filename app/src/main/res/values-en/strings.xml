@@ -26,4 +26,14 @@
     <string name="notifications">Notifications</string>
     <string name="finished">Finished</string>
     <string name="notif_time">Progress time in notification</string>
+    <string name="black">Dark theme</string>
+    <string name="edit">Edit</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="delete">Delete</string>
+    <string name="name">Name</string>
+    <string name="seconds">seconds</string>
+    <string name="minutes">minutes</string>
+    <string name="sound">Sound</string>
+    <string name="vibration">Vibration</string>
+    <string name="name_cant_be_empty">Name can\'t be empty</string>
 </resources>

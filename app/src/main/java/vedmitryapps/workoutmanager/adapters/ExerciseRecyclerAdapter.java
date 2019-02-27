@@ -44,37 +44,26 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     private RealmList<Exercise> exercises;
     Mode mode = Mode.NORMAL;
     AdapterView.OnItemClickListener mItemClickListener;
-
     Realm realm;
-
     OnStartDragListener onStartDragListener;
-
     Events.WorkoutStep workoutStep;
     Context context;
     private WorkOut wotkout;
-
     int selectedItemPos = 0;
-
     int curExPos = 0;
-
     boolean showNumber;
-
     boolean black;
 
     public ExerciseRecyclerAdapter(RealmList<Exercise> data, OnStartDragListener onStartDragListener) {
         this.exercises = data;
         this.onStartDragListener = onStartDragListener;
-        showNumber = SharedManager.getProperty("showNumber");
+        showNumber = SharedManager.getProperty(Constants.KEY_SHOW_POSITION);
         realm = Realm.getDefaultInstance();
-
         black = SharedManager.getProperty(Constants.KEY_BLACK_ENABLED);
-
     }
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-
-        Log.d("TAG21", "From - " + fromPosition + " to - " + toPosition);
         notifyItemMoved(fromPosition, toPosition);
         realm.beginTransaction();
         exercises.move(fromPosition, toPosition);
@@ -87,24 +76,17 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
     @Override
     public void onItemDismiss(int position) {
-
     }
 
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-
     }
 
-    public int getCurExPos() {
-        return curExPos;
-    }
 
     public int getSelectedItemPos() {
         return selectedItemPos;
     }
-    // data is passed into the constructor
 
-    // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(context==null){
@@ -114,7 +96,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         return new ViewHolder(view);
     }
 
-    // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
@@ -131,7 +112,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             holder.settingsButton.setColorFilter(context.getResources().getColor(R.color.black_78));
         }
 
-        Log.d("TAG21", "bind  =  " + position);
         if(mode.equals(Mode.NORMAL)){
             if(selectedItemPos==position){
                 holder.selectedIcon.setVisibility(View.VISIBLE);
@@ -140,13 +120,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                 holder.selectedIcon.setVisibility(View.GONE);
                 holder.exerciseNamePadding.setVisibility(View.GONE);
             }
-
-
             holder.progressLayout.setVisibility(View.GONE);
-        //    holder.mainContainer.setBackgroundColor(Color.TRANSPARENT);
-
-       //     holder.exerciseName.setTextColor(Color.parseColor("#7d8e98"));
-       //     holder.exerciseTime.setTextColor(Color.parseColor("#7d8e98"));
             holder.settingsButton.setVisibility(View.VISIBLE);
 
             if(workoutStep!=null && wotkout!=null && workoutStep.isFinished()){
@@ -164,28 +138,20 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             holder.exerciseNamePadding.setVisibility(View.GONE);
 
             if(position<curExPos){
-         //       holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
                 if(black){
                     holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished_black);
                 } else {
                     holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished);
                 }
-            } else {
-        //        holder.mainContainer.setBackgroundColor(Color.TRANSPARENT);
             }
             if(workoutStep!=null && wotkout!=null){
                 if(position==curExPos){
-                    Log.d("TAG21", "current exercise is - " + exercises.get(position).getName());
-
-            //        holder.exerciseName.setTextColor(Color.WHITE);
-            //        holder.exerciseTime.setTextColor(Color.WHITE);
                     holder.progressLayout.setVisibility(View.VISIBLE);
                     holder.progressLayout.setMaxProgress(exercises.get(position).getTimeInSeconds());
                     holder.progressLayout.setCurrentProgress(Util.getCurrentExerciseProgress(wotkout, workoutStep.getTime()));
 
                     if(workoutStep.isFinished()){
                         holder.progressLayout.setVisibility(View.GONE);
-                     //   holder.mainContainer.setBackgroundColor(Color.parseColor("#662b56c6"));
                         if(black){
                             holder.cardView.setBackgroundResource(R.drawable.workout_bg_finished_black);
                         } else {
@@ -194,8 +160,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                     }
                 } else {
                     holder.progressLayout.setVisibility(View.GONE);
-            //        holder.exerciseName.setTextColor(Color.parseColor("#7d8e98"));
-            //        holder.exerciseTime.setTextColor(Color.parseColor("#7d8e98"));
                 }
             }
         }
@@ -208,7 +172,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         holder.exerciseTime.setText(Util.secondsToTime(exercises.get(position).getTimeInSeconds()));
     }
 
-    // total number of rows
     @Override
     public int getItemCount() {
         return exercises.size();
@@ -222,7 +185,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     public void update(WorkOut workOut, Events.WorkoutStep workoutStep) {
         this.workoutStep = workoutStep;
         this.wotkout = workOut;
-        //before we should get what is current exercise
         long id = Util.getCurrentExercise(workOut, workoutStep.getTime()).getId();
 
         if(workoutStep.isFinished() || workoutStep.isItterapted()){
@@ -248,26 +210,19 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         this.showNumber = showNumber;
     }
 
-    // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener, ItemTouchHelperViewHolder{
         @BindView(R.id.exerciseName)
         TextView exerciseName;
         @BindView(R.id.exerciseTime)
         TextView exerciseTime;
-
         @BindView(R.id.selectedItem)
         ImageView selectedIcon;
-
         @BindView(R.id.settingsButton)
         ImageView settingsButton;
-
-
         @BindView(R.id.progressLayout)
         ProgressLayout progressLayout;
-
         @BindView(R.id.exerciseNamePadding)
         View exerciseNamePadding;
-
         @BindView(R.id.cardView)
         CardView cardView;
 
@@ -280,7 +235,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    // show context menu..
                     return true;
                 }
             });
@@ -291,16 +245,12 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
                     final int position = getAdapterPosition();
                     PopupMenu popupMenu = new PopupMenu(context, v);
-
                     popupMenu.inflate(R.menu.exercise_menu);
-
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()){
                                 case R.id.duplicate:
-                                    Log.d("TAG21", "Ex s = 0 " + getAdapterPosition());
-
                                     realm.beginTransaction();
                                     Exercise prototipe = exercises.get(getAdapterPosition());
                                     Exercise exercise = new Exercise();
@@ -313,7 +263,6 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                                     realm.commitTransaction();
                                     notifyDataSetChanged();
                                     EventBus.getDefault().post(new Events.ClickExercise(selectedItemPos));
-
                                     return true;
                                 case R.id.delete:
                                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
@@ -332,26 +281,18 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
                                             realm.commitTransaction();
                                             notifyItemRemoved(position);
                                             if(exercises.size()==0){
-                                                Log.d("TAG21", "Ex s = 0 ");
                                                 EventBus.getDefault().post(new Events.ClickExercise(-1));
                                             } else {
-                                                Log.d("TAG21", "Ex s not 0 ");
                                                 if(selectedItemPos < exercises.size()){
-                                                    Log.d("TAG21", "selectedItemPos < exercises.size() - " + exercises.size() + " a p " + getAdapterPosition());
-                                                    EventBus.getDefault().post(new Events.ClickExercise(selectedItemPos));
-
+                                                     EventBus.getDefault().post(new Events.ClickExercise(selectedItemPos));
                                                 } else {
-                                                    Log.d("TAG21", "selectedItemPos >= exercises.size()");
                                                     selectedItemPos=0;
-
                                                     EventBus.getDefault().post(new Events.ClickExercise(0));
                                                 }
                                             }
                                             dialog.dismiss();
 
                                             if(selectedItemPos == position){
-                                                Log.d("TAG21", "eq");
-
                                                 selectedItemPos = 0;
                                                 notifyItemChanged(selectedItemPos);
                                             }
@@ -386,9 +327,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
         @Override
         public void onItemSelected() {
-
             cardView.setBackgroundResource(R.drawable.workout_bg_selected);
-
         }
 
         @Override
@@ -400,17 +339,12 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
     }
 
     private void showChooseSoundDialog() {
-        Log.d("TAG21", "click show sound dialog");
-
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         final View dialogView = inflater.inflate(R.layout.choose_sound_dialog_layout, null);
         dialogBuilder.setView(dialogView);
-
         final RecyclerView recyclerView = dialogView.findViewById(R.id.soundRecyclerView);
-
         final SoundRecyclerAdapter adapter = new SoundRecyclerAdapter();
-
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);

@@ -40,19 +40,11 @@ public class Util {
     }
 
     public static int getStartingTime(WorkOut workOut, int position){
-        Log.d("TAG21", "getStartingTime - " + position);
-
         RealmList<Exercise> periods = workOut.getExcersices();
-
         int excludeTime = 0;
-
         for (int i = 0; i < position; i++) {
             excludeTime+=periods.get(i).getTimeInSeconds();
-            Log.d("TAG21", "getStartingTime step - " + excludeTime );
         }
-
-        Log.d("TAG21", "getStartingTime - result - " + excludeTime);
-
         return excludeTime;
     }
 
@@ -70,13 +62,11 @@ public class Util {
                 break;
             }
         }
-
         if(exercise==null){
             //return last exercise if progress more then total workout time
             //func just for last second of workout progress
             exercise = workOut.getExcersices().get(workOut.getExcersices().size()-1);
         }
-        Log.d("TAG21", "Util - " + exercise.getName());
         return exercise;
     }
 
@@ -89,12 +79,9 @@ public class Util {
         for (int i = 0; i < workOut.getExcersices().size(); i++) {
             exTime = workOut.getExcersices().get(i).getTimeInSeconds();
             sum += exTime;
-            Log.d("TAG21", "progress - " + progress + " exTime - " + exTime + " sum - " + sum);
             if(sum > progress){
-                Log.d("TAG21", "sum > progress");
                 exercise = workOut.getExcersices().get(i);
                  sum=sum-exTime;
-                Log.d("TAG21", "return " + sum);
                 break;
             }
         }
@@ -105,9 +92,7 @@ public class Util {
             exercise = workOut.getExcersices().get(workOut.getExcersices().size()-1);
             sum=sum-exercise.getTimeInSeconds();
         }
-
         String s = secondsToTime(progress-sum);
-        Log.d("TAG22", "pr - sum " + (progress-sum) + " Ttt  - " + s);
         return s;
     }
 
@@ -120,12 +105,9 @@ public class Util {
         for (int i = 0; i < workOut.getExcersices().size(); i++) {
             exTime = workOut.getExcersices().get(i).getTimeInSeconds();
             sum += exTime;
-            Log.d("TAG21", "progress - " + progress + " exTime - " + exTime + " sum - " + sum);
             if(sum > progress){
-                Log.d("TAG21", "sum > progress");
                 exercise = workOut.getExcersices().get(i);
                 sum=sum-exTime;
-                Log.d("TAG21", "return " + sum);
                 break;
             }
         }
@@ -136,37 +118,26 @@ public class Util {
             exercise = workOut.getExcersices().get(workOut.getExcersices().size()-1);
             sum=sum-exercise.getTimeInSeconds();
         }
-
-        Log.d("TAG21", "Util - " + exercise.getName());
         return progress-sum;
     }
 
     public static boolean isLastSecond(final Context context, WorkOut workOut, int progress){
-
-
        RealmList<Exercise> exercises = workOut.getExcersices();
-
-
         int[] mas = new int[exercises.size()];
-
         int sum = 0;
         for (int i = 0; i < exercises.size(); i++) {
             sum = sum + exercises.get(i).getTimeInSeconds();
             mas[i] = sum;
         }
-
         for (int i = 0; i < mas.length; i++) {
-            Log.d("TAG24", "mas " + mas[i] + "progress - " + progress);
             if(mas[i] == progress){
                 if(exercises.get(i).getSound()!=0){
-                    Log.d("TAG24", "SOUND! " + exercises.get(i).getSound());
                     MediaPlayer mp;
                     mp = new MediaPlayer();
                     AssetFileDescriptor afd = null;
                     try {
                         afd = context.getAssets().openFd(Constants.soundsName[exercises.get(i).getSound()]);
                         mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                        //mp.setVolume(1f, 1f);
                         mp.prepare();
                         mp.start();
                     } catch (IOException e) {
@@ -180,70 +151,6 @@ public class Util {
                 }
             }
         }
-
-
-
-        /*final Exercise exercise1 = getCurrentExercise(workOut, progress);
-
-        Exercise exercise = null;
-        int exTime;
-        int sum = 0;
-
-        for (int i = 0; i < workOut.getExcersices().size(); i++) {
-            exTime = workOut.getExcersices().get(i).getTimeInSeconds();
-            sum += exTime;
-            Log.d("TAG21", "progress - " + progress + " exTime - " + exTime + " sum - " + sum);
-            if(sum > progress){
-                Log.d("TAG21", "sum > progress");
-                exercise = workOut.getExcersices().get(i);
-                sum=sum-exTime;
-                Log.d("TAG21", "return " + sum);
-                break;
-            }
-        }
-
-        if(exercise==null){
-            //return last exercise if progress more then total workout time
-            //func just for last second of workout progress
-            exercise = workOut.getExcersices().get(workOut.getExcersices().size()-1);
-            sum=sum-exercise.getTimeInSeconds();
-        }
-
-        Log.d("TAG22", "Util - " + exercise.getName() + " progress - " + progress);
-       // return secondsToTime(progress-sum);
-        Log.d("TAG22", "pr - sum : " + (progress-sum));
-        Log.d("TAG22", "ex time : " + exercise1.getTimeInSeconds());
-
-
-        final int sound = exercise1.getSound();
-
-   */
-
-
-
-   /*     if(progress-sum == exercise1.getTimeInSeconds()-1){
-            if(exercise1.getSound()!=0){
-                        MediaPlayer mp;
-                        mp = new MediaPlayer();
-                        AssetFileDescriptor afd = null;
-                        try {
-                            afd = context.getAssets().openFd(soundsName[sound]);
-                            mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                            //mp.setVolume(1f, 1f);
-                            mp.prepare();
-                            mp.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-            }*/
         return false;
-    }
-
-
-
-    public static int dpToPx(Context context, int dp) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 }

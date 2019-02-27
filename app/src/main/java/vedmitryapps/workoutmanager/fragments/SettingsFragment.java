@@ -115,7 +115,6 @@ public class SettingsFragment extends Fragment {
 
     @OnClick(R.id.defaultSoundContainer)
     public void dsf(View v){
-            Log.d("TAG21", "click show sound dialog");
 
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );

@@ -27,24 +27,19 @@ import vedmitryapps.workoutmanager.models.WorkOut;
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     private RealmResults<WorkOut> workOuts;
-
     Map<Long, Events.WorkoutStep> stepMap = new HashMap();
 
-
-    // data is passed into the constructor
     public MainAdapter(RealmResults<WorkOut> data, Map stepMap) {
         this.workOuts = data;
         this.stepMap = stepMap;
     }
 
-    // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.workout_row, parent, false);
         return new ViewHolder(view);
     }
 
-    // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
@@ -82,21 +77,18 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             }
 
         } else {
-            //Log.d("TAG21", "not contains ");
             holder.progressLayout.setVisibility(View.GONE);
             holder.workoutTotalTime.setText(Util.secondsToTime(Util.totalTime(workOuts.get(position))));
             holder.exerciseName.setText("");
         }
     }
 
-    // total number of rows
     @Override
     public int getItemCount() {
         return workOuts.size();
     }
 
     public void updateItem2(int position) {
-        Log.d("TAG21", "Update item - " + position);
         notifyItemChanged(position);
     }
 
@@ -144,7 +136,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             buttonPlay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("TAG21", "click start");
                     EventBus.getDefault().post(new Events.StartWorkout(workOuts.get(getAdapterPosition()).getId(), 0));
                 }
             });
@@ -152,7 +143,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             buttonPause.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("TAG21", "click pause");
                     EventBus.getDefault().post(new Events.PauseWorkout(workOuts.get(getAdapterPosition()).getId()));
                 }
             });

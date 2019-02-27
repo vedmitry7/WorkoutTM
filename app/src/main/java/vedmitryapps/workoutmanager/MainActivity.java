@@ -35,12 +35,8 @@ public class MainActivity extends AppCompatActivity implements Storage{
 
     @BindView(R.id.adView)
     AdView mAdView;
-
     Map<Long, Events.WorkoutStep> stepMap = new HashMap();
     MainFragment mainFragment;
-    private boolean fromNotif;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,11 +62,8 @@ public class MainActivity extends AppCompatActivity implements Storage{
         transaction.commit();
 
         if(getIntent()!=null && getIntent().getLongExtra("id", -1) != -1){
-            fromNotif = true;
             openWorkout(new Events.OpenWorkout(getIntent().getLongExtra("id", -1)));
         }
-
-
     }
 
 
@@ -115,9 +108,6 @@ public class MainActivity extends AppCompatActivity implements Storage{
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onStart(Map<Long, Events.WorkoutStep> finishedStepMap) {
-        Log.d("TAG21", " -------- STICKY!");
-        Log.d("TAG25", " -------- STICKY!");
-
         for (Map.Entry item : finishedStepMap.entrySet())
         {
             stepMap.put((Long) item.getKey(), (Events.WorkoutStep) item.getValue());
@@ -141,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements Storage{
     @Override
     protected void onPause() {
         super.onPause();
-
         if (mAdView != null)
             mAdView.pause();
     }
@@ -158,13 +147,10 @@ public class MainActivity extends AppCompatActivity implements Storage{
         super.onResume();
         if (mAdView != null)
             mAdView.resume();
-        Log.d("TAG25", " resume!");
-
 
         if(EventBus.getDefault().getStickyEvent(Map.class)!=null){
             onStart(EventBus.getDefault().getStickyEvent(Map.class));
         }
-
     }
 
     @Override
@@ -185,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements Storage{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if (mAdView != null)
             mAdView.destroy();
     }

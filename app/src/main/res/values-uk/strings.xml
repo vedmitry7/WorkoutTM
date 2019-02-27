@@ -26,4 +26,14 @@
     <string name="notifications">Уведомления</string>
     <string name="finished">Завершено</string>
     <string name="notif_time">Время в уведомлении</string>
+    <string name="black">Темная тема</string>
+    <string name="edit">Редактировать</string>
+    <string name="duplicate">Дублировать</string>
+    <string name="delete">Удалить</string>
+    <string name="minutes">минут</string>
+    <string name="seconds">секунд</string>
+    <string name="name">Название</string>
+    <string name="sound">Звук</string>
+    <string name="vibration">Вибрация</string>
+    <string name="name_cant_be_empty">Имя не может быть пустым</string>
 </resources>
