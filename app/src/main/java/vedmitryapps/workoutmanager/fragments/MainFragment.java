@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -55,24 +56,21 @@ public class MainFragment extends Fragment {
     @BindView(R.id.mainContainer)
     ConstraintLayout mainContainer;
 
-    Realm mRealm;
+    @BindView(R.id.bottomButton)
+    CardView cardView;
 
+    Realm mRealm;
     RealmList<WorkOut> workOuts;
     WorkoutRecyclerAdapter adapter;
-
     Map<Long, Events.WorkoutStep> stepMap = new HashMap();
-
     Storage storage;
     GodObject godObject;
-
     ItemTouchHelper itemTouchHelper;
-
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_fragment, container, false);
-
         ButterKnife.bind(this, view);
         return view;
     }
@@ -81,10 +79,16 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("TAG21", "cl");
+                bottomButton(view);
+            }
+        });
+
         initColors();
-
         mRealm = Realm.getDefaultInstance();
-
         godObject = mRealm.where(GodObject.class).findFirst();
         if(godObject==null){
             mRealm.beginTransaction();
@@ -111,6 +115,9 @@ public class MainFragment extends Fragment {
         RecyclerViewBottomMargin decoration = new RecyclerViewBottomMargin(64);
         recyclerView.addItemDecoration(decoration);
 
+        if(stepMap!=null){
+            adapter.update(stepMap);
+        }
     }
 
     private void initColors() {
@@ -126,6 +133,7 @@ public class MainFragment extends Fragment {
 
     @OnClick(R.id.bottomButton)
     public void bottomButton(final View v){
+        Log.d("TAG21", "bottomButton");
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
             dialogBuilder.setTitle(R.string.new_workout);
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
@@ -199,6 +207,7 @@ public class MainFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         storage = (Storage) context;
+        stepMap = storage.getState();
     }
 
     @Override

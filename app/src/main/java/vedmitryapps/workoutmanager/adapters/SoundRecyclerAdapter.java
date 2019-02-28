@@ -58,7 +58,6 @@ public class SoundRecyclerAdapter extends RecyclerView.Adapter<SoundRecyclerAdap
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
         holder.soundName.setText(Constants.soundsTitle[position]);
-
         if(selectedPosition == position){
             holder.indicator.setVisibility(View.VISIBLE);
         } else {

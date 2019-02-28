@@ -7,7 +7,7 @@ android {
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
         applicationId "vedmitryapps.workouttm"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -40,8 +40,6 @@ dependencies {
     implementation 'io.realm:android-adapters:3.1.0'
 
     implementation 'com.shawnlin:number-picker:2.4.6'
-
-    implementation 'com.kevalpatel2106:ruler-picker:1.1'
 
     //ProgressLayout
     implementation 'com.github.iammert:ProgressLayout:a2ac196500'

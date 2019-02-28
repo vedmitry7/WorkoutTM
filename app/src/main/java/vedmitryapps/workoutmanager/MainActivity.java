@@ -43,9 +43,7 @@ public class MainActivity extends AppCompatActivity implements Storage{
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setStatusBar(new Events.SetStatusBar());
-        }
+        setStatusBar(new Events.SetStatusBar());
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Intent intent = new Intent(this, MyService.class);
@@ -69,9 +67,6 @@ public class MainActivity extends AppCompatActivity implements Storage{
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setStatusBar(Events.SetStatusBar event) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return;
-        }
 
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
