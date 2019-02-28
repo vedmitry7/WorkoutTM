@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +36,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 import vedmitryapps.workoutmanager.App;
 import vedmitryapps.workoutmanager.Constants;
 import vedmitryapps.workoutmanager.Events;
@@ -234,7 +232,7 @@ public class WorkOutFragment extends Fragment  {
     }
 
     private void setStepInfo(Events.WorkoutStep workoutStep) {
-        if(workoutStep.isFinished() || workoutStep.isItterapted()){
+        if(workoutStep.isFinished() || workoutStep.isInterrupted()){
             mode = Mode.NORMAL;
             setBottomButtonParams(mode);
             callback.setDragEnabled(true);

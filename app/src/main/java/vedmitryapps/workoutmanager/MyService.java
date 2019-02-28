@@ -11,21 +11,17 @@ import android.os.IBinder;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import io.realm.Realm;
 import vedmitryapps.workoutmanager.models.WorkOut;
 
 public class MyService extends Service {
-
 
     Timer timer;
     long interval = 1000;
@@ -61,7 +57,6 @@ public class MyService extends Service {
         repeat.put(workout.getId(), workout.repeatingCount);
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPause(Events.PauseWorkout workout) {
         Log.d("TAG21", "Pause - " + workout.getId());
@@ -91,27 +86,19 @@ public class MyService extends Service {
         if (workouts.containsKey(workout.getId())) {
             ((TimerTask) workouts.get(workout.getId())).cancel();
         }
-
         workouts.remove(workout.getId());
         progress.remove(workout.getId());
-
         Events.WorkoutStep step = new Events.WorkoutStep(workout.getId(), 0);
-        step.setItterapted(true);
+        step.setInterrupted(true);
         EventBus.getDefault().post(step);
     }
-
-    public void onResume(Events.ResumeWorkout workout) {
-    }
-
 
     void startWorkout(final long id, boolean missStartSound) {
         Log.d("TAG21", "Start workout");
 
         final WorkOut workOut = mRealm.where(WorkOut.class).equalTo("id", id).findFirst();
-
         final boolean[] mas = new boolean[1];
         mas[0] = missStartSound;
-
         final int totalTime = Util.totalTime(workOut);
         final int currentProgress;
         if (progress.get(id) != null) {
@@ -184,7 +171,6 @@ public class MyService extends Service {
 
                 progress.put(id, ++currentProgress);
 
-
                 if ((int) progress.get(id) > totalTime) {
 
                     if (repeatCount > 0) {
@@ -209,12 +195,8 @@ public class MyService extends Service {
         timer.schedule((TimerTask) workouts.get(id), 0, interval);
     }
 
-
-
-
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -225,18 +207,10 @@ public class MyService extends Service {
     }
 
     public void sendNotification(Events.WorkoutStep workoutStep, WorkOut workOut) {
-
-        if (SharedManager.getProperty(Constants.KEY_NOTIFICATION_DISABLED)){
+        if (SharedManager.getProperty(Constants.KEY_NOTIFICATION_DISABLED))
             return;
-        }
-
-     //   Realm mRealm = Realm.getDefaultInstance();
-
-       // WorkOut workOut = mRealm.where(WorkOut.class).equalTo("id", workoutStep.getId()).findFirst();
-
         if(workOut==null){
             workOut = mRealm.where(WorkOut.class).equalTo("id", workoutStep.getId()).findFirst();
-          //  Log.d("TAG21", String.valueOf(workOut == null)  +  " workout null ? " );
         }
 
         String title;
@@ -258,10 +232,9 @@ public class MyService extends Service {
             title = Util.getCurrentExercise(workOut, workoutStep.getTime()).getName();
         }
 
-
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_add)
+                        .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(title)
                         .setContentText(workOut.getName()
                         );
@@ -276,7 +249,6 @@ public class MyService extends Service {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
         mBuilder.setContentIntent(resultPendingIntent);
-        Log.d("TAG25", workoutStep.getId() + " Is paused  " + workoutStep.isPaused());
 
         Intent intent = new Intent(this, NotificationActionReceiver.class);
         if(workoutStep.isPaused()){
@@ -288,16 +260,13 @@ public class MyService extends Service {
         intent.putExtra("id", workOut.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 , intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
         PendingIntent continuePI = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         if(!workoutStep.isFinished()){
             if(workoutStep.isPaused()){
-                mBuilder.addAction(R.drawable.ic_add, getString(R.string.continueWorkout), continuePI);
+                mBuilder.addAction(R.drawable.ic_play, getString(R.string.continueWorkout), continuePI);
             } else {
-                mBuilder.addAction(R.drawable.ic_dots_vertical, getString(R.string.pause), continuePI);
+                mBuilder.addAction(R.drawable.ic_pause, getString(R.string.pause), continuePI);
             }
             int PROGRESS_MAX = Util.getCurrentExercise(workOut, workoutStep.getTime()).getTimeInSeconds();
             int PROGRESS_CURRENT = Util.getCurrentExerciseProgress(workOut, workoutStep.getTime());

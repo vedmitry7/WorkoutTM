@@ -2,25 +2,18 @@ package vedmitryapps.workoutmanager.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-
-import com.shawnlin.numberpicker.NumberPicker;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -187,7 +180,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         this.wotkout = workOut;
         long id = Util.getCurrentExercise(workOut, workoutStep.getTime()).getId();
 
-        if(workoutStep.isFinished() || workoutStep.isItterapted()){
+        if(workoutStep.isFinished() || workoutStep.isInterrupted()){
             mode = Mode.NORMAL;
         } else {
             mode = Mode.PLAYING;

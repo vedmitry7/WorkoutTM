@@ -31,16 +31,6 @@ public class Events {
         }
     }
 
-    public static class ResumeWorkout {
-        private long id;
-        public ResumeWorkout(long id) {
-            this.id = id;
-        }
-        public long getId() {
-            return id;
-        }
-    }
-
     public static class PauseWorkout {
         private long id;
         public PauseWorkout(long id) {
@@ -86,7 +76,7 @@ public class Events {
         private int time;
         private boolean finished;
         private boolean paused;
-        private boolean itterapted;
+        private boolean interrupted;
         private int repeating;
 
         public WorkoutStep(long id, int time) {
@@ -117,12 +107,12 @@ public class Events {
             this.paused = paused;
         }
 
-        public boolean isItterapted() {
-            return itterapted;
+        public boolean isInterrupted() {
+            return interrupted;
         }
 
-        public void setItterapted(boolean itterapted) {
-            this.itterapted = itterapted;
+        public void setInterrupted(boolean interrupted) {
+            this.interrupted = interrupted;
         }
 
         public int getRepeating() {
@@ -131,138 +121,6 @@ public class Events {
 
         public void setRepeating(int repeating) {
             this.repeating = repeating;
-        }
-    }
-
-    public static class SelectedTrainingMessage {
-        private String message;
-        public SelectedTrainingMessage(String message) {
-            this.message = message;
-        }
-        public String getMessage() {
-            return message;
-        }
-    }
-
-
-    public static class ServiceMainFragmentTrainingProgressMessage {
-        @Override
-        public String toString() {
-            return  currentProgressTime +
-                    " SEC. " + currentPeriodName + ' ' + currentPeriodTime +
-                    " sec. Total " + totalTrainingTime +
-                    ", PeriodId =" + currentPeriodId +
-                    ", totalCurrentPeriodTime=" + totalCurrentPeriodTime +
-                    ", pause=" + pause +
-                    '}';
-        }
-
-        private long id;
-        private int currentProgressTime;
-        private String currentPeriodName;
-        private boolean finish;
-        private int currentPeriodTime;
-        private int totalTrainingTime;
-        private int totalCurrentPeriodTime;
-        private long currentPeriodId;
-        private boolean pause;
-        private boolean fromMain;
-
-        public boolean isFromMain() {
-            return fromMain;
-        }
-
-        public void setFromMain(boolean fromMain) {
-            this.fromMain = fromMain;
-        }
-
-        public ServiceMainFragmentTrainingProgressMessage(long id, int  currentProgressTime, int totalTrainingTime, long currentPeriodId, String currentPeriodName, int currentPeriodTime, int totalCurrentPeriodTime, boolean finish) {
-            this.id = id;
-            this.currentProgressTime = currentProgressTime;
-            this.currentPeriodName = currentPeriodName;
-            this.currentPeriodTime = currentPeriodTime;
-            this.totalTrainingTime = totalTrainingTime;
-            this.totalCurrentPeriodTime = totalCurrentPeriodTime;
-            this.finish = finish;
-            this.currentPeriodId = currentPeriodId;
-        }
-        public int getCurrentProgressTime() {
-            return currentProgressTime;
-        }
-        public long getId() {
-            return id;
-        }
-        public String getCurrentPeriodName() {
-            return currentPeriodName;
-        }
-        public int getTotalTrainingTime() {
-            return totalTrainingTime;
-        }
-        public int getTotalCurrentPeriodTime() {
-            return totalCurrentPeriodTime;
-        }
-        public long getCurrentPeriodId() {
-            return currentPeriodId;
-        }
-        public boolean isPause() {
-            return pause;
-        }
-        public void setPause(boolean pause) {
-            this.pause = pause;
-        }
-        public int getCurrentPeriodTime() {
-            return currentPeriodTime;
-        }
-        public boolean isFinish() {
-            return finish;
-        }
-    }
-
-    public static class PlayMessage {
-        private long id;
-
-        public PlayMessage(long id) {
-            this.id = id;
-        }
-
-        public long getTrainingId() {
-            return id;
-        }
-    }
-
-    public static class PauseMessage {
-        private long id;
-
-        public PauseMessage(long id) {
-            this.id = id;
-        }
-
-        public long getTrainingId() {
-            return id;
-        }
-    }
-
-    public static class StopMessage {
-        private long id;
-
-        public StopMessage(long id) {
-            this.id = id;
-        }
-
-        public long getTrainingId() {
-            return id;
-        }
-    }
-
-    public static class StopUpdate {
-        private boolean update;
-
-        public boolean isUpdate() {
-            return update;
-        }
-
-        public StopUpdate(boolean update) {
-            this.update = update;
         }
     }
 
@@ -293,21 +151,6 @@ public class Events {
         }
     }
 
-    public static class ChangeExercise {
-        Exercise exercise;
-
-        public ChangeExercise(Exercise exercise) {
-            this.exercise = exercise;
-        }
-
-        public Exercise getExercise() {
-            return exercise;
-        }
-
-        public void setExercise(Exercise exercise) {
-            this.exercise = exercise;
-        }
-    }
 
     public static class DeleteWorkout {
         private int position;

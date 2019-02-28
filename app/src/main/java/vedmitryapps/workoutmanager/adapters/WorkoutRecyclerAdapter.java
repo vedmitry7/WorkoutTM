@@ -3,7 +3,6 @@ package vedmitryapps.workoutmanager.adapters;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,7 +117,7 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
                     holder.buttonPlay.setVisibility(View.GONE);
                 }
 
-                if(workoutStep.isItterapted()){
+                if(workoutStep.isInterrupted()){
                     holder.buttonPause.setVisibility(View.GONE);
                     holder.buttonPlay.setVisibility(View.VISIBLE);
                     holder.workoutTotalTime.setText(Util.secondsToTime(Util.totalTime(workOuts.get(position))));
