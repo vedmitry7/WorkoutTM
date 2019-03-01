@@ -3,6 +3,7 @@
     package="vedmitryapps.workoutmanager">
 
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="com.android.vending.BILLING"/>
 
     <application
         android:name=".App"

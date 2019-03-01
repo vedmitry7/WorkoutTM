@@ -1,10 +1,6 @@
 package vedmitryapps.workoutmanager;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -12,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -21,8 +18,16 @@ import com.google.android.gms.ads.AdView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.solovyev.android.checkout.ActivityCheckout;
+import org.solovyev.android.checkout.BillingRequests;
+import org.solovyev.android.checkout.Checkout;
+import org.solovyev.android.checkout.EmptyRequestListener;
+import org.solovyev.android.checkout.Inventory;
+import org.solovyev.android.checkout.ProductTypes;
+import org.solovyev.android.checkout.Purchase;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -33,6 +38,30 @@ import vedmitryapps.workoutmanager.fragments.WorkOutFragment;
 
 public class MainActivity extends AppCompatActivity implements Storage{
 
+    private final ActivityCheckout mCheckout = Checkout.forActivity(this, App.getsInstance().getBilling());
+    private Inventory mInventory;
+
+    private class PurchaseListener extends EmptyRequestListener<Purchase> {
+        @Override
+        public void onSuccess(Purchase purchase) {
+            // here you can process the loaded purchase
+        }
+
+        @Override
+        public void onError(int response, Exception e) {
+            // handle errors here
+        }
+    }
+
+    private class InventoryCallback implements Inventory.Callback {
+        @Override
+        public void onLoaded(Inventory.Products products) {
+            final Inventory.Product product = products.get(ProductTypes.IN_APP);
+        }
+    }
+
+
+
     @BindView(R.id.adView)
     AdView mAdView;
     Map<Long, Events.WorkoutStep> stepMap = new HashMap();
@@ -42,6 +71,14 @@ public class MainActivity extends AppCompatActivity implements Storage{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        mCheckout.start();
+        mCheckout.createPurchaseFlow(new PurchaseListener());
+
+        mInventory = mCheckout.makeInventory();
+        mInventory.load(Inventory.Request.create()
+                .loadAllPurchases()
+                .loadSkus(ProductTypes.IN_APP, "AD_FREE"), new InventoryCallback());
 
         setStatusBar(new Events.SetStatusBar());
 
@@ -62,6 +99,23 @@ public class MainActivity extends AppCompatActivity implements Storage{
         if(getIntent()!=null && getIntent().getLongExtra("id", -1) != -1){
             openWorkout(new Events.OpenWorkout(getIntent().getLongExtra("id", -1)));
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCheckout.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onClick(Events.RemoveAds event) {
+        mCheckout.whenReady(new Checkout.EmptyListener() {
+            @Override
+            public void onReady(BillingRequests requests) {
+                requests.purchase(ProductTypes.IN_APP, "AD_FREE", null, mCheckout.getPurchaseFlow());
+            }
+        });
     }
 
 
@@ -166,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements Storage{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mCheckout.stop();
         if (mAdView != null)
             mAdView.destroy();
     }

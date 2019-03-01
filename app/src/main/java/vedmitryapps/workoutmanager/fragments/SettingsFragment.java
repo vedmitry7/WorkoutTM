@@ -151,4 +151,10 @@ public class SettingsFragment extends Fragment {
     public void backButton(View v){
         getActivity().onBackPressed();
     }
+
+    @OnClick(R.id.removeIds)
+    public void removeIds(View v){
+        EventBus.getDefault().post(new Events.RemoveAds());
+
+    }
 }

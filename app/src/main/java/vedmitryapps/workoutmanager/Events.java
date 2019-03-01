@@ -192,4 +192,8 @@ public class Events {
 
     public static class SetStatusBar {
     }
+
+    public static class RemoveAds {
+
+    }
 }
