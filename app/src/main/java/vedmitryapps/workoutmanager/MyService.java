@@ -238,6 +238,7 @@ public class MyService extends Service {
                         .setContentTitle(title)
                         .setContentText(workOut.getName()
                         );
+
         Intent resultIntent = new Intent(this, MainActivity.class);
         resultIntent.putExtra("id", workOut.getId());
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);

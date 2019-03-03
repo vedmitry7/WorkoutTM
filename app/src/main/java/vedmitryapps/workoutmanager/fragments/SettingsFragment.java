@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,8 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+
+import com.google.android.gms.ads.AdRequest;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -41,12 +42,14 @@ public class SettingsFragment extends Fragment {
     @BindView(R.id.defaultSoundContainer) ConstraintLayout sound;
     @BindView(R.id.toolbarLayout) ConstraintLayout toolbar;
     @BindView(R.id.mainContainer) ConstraintLayout mainContainer;
+    @BindView(R.id.removeIds) ConstraintLayout removeIds;
     @BindView(R.id.soundName) TextView soundName;
     @BindView(R.id.textView) TextView textView;
     @BindView(R.id.textView2) TextView textView2;
     @BindView(R.id.textView3) TextView textView3;
     @BindView(R.id.textView4) TextView textView4;
     @BindView(R.id.textView5) TextView textView5;
+    @BindView(R.id.textAdFree) TextView textAdFree;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,6 +90,10 @@ public class SettingsFragment extends Fragment {
                 initColors();
             }
         });
+
+        if(SharedManager.getProperty(Constants.KEY_ADS_DISABLED)){
+            removeIds.setVisibility(View.GONE);
+        }
     }
 
     private void initColors() {
@@ -101,6 +108,7 @@ public class SettingsFragment extends Fragment {
             textView4.setTextColor(color);
             textView5.setTextColor(color);
             soundName.setTextColor(color);
+            textAdFree.setTextColor(color);
         } else {
             toolbar.setBackgroundColor(getResources().getColor(R.color.toolbar_new));
             mainContainer.setBackgroundColor(getResources().getColor(R.color.background_new));
@@ -110,6 +118,7 @@ public class SettingsFragment extends Fragment {
             textView4.setTextColor(Color.BLACK);
             textView5.setTextColor(Color.BLACK);
             soundName.setTextColor(Color.BLACK);
+            textAdFree.setTextColor(Color.BLACK);
         }
     }
 

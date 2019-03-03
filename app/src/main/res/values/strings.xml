@@ -38,4 +38,5 @@
     <string name="sound">Sound</string>
     <string name="vibration">Vibration</string>
     <string name="name_cant_be_empty">Name can\'t be empty</string>
+    <string name="remove_ads">Remove Ads</string>
 </resources>

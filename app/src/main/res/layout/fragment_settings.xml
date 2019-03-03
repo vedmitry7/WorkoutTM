@@ -265,12 +265,12 @@
                 android:layout_height="56dp">
 
                 <TextView
-                    android:id="@+id/textView52"
+                    android:id="@+id/textAdFree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:text="Убрать рекламу"
+                    android:text=""
                     android:textColor="@color/black_78"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

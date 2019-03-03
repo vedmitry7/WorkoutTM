@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -27,7 +28,6 @@ import org.solovyev.android.checkout.ProductTypes;
 import org.solovyev.android.checkout.Purchase;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -44,12 +44,20 @@ public class MainActivity extends AppCompatActivity implements Storage{
     private class PurchaseListener extends EmptyRequestListener<Purchase> {
         @Override
         public void onSuccess(Purchase purchase) {
+            Toast.makeText(getApplicationContext(), "success - " + purchase.sku + " " + purchase.payload, Toast.LENGTH_SHORT).show();
+            Log.d("TAG21", "Success - " + purchase.data);
+            Log.d("TAG21", "Success - " + purchase.payload);
+            Log.d("TAG21", "Success - " + purchase.packageName);
+            Log.d("TAG21", "Success - " + purchase.sku);
             // here you can process the loaded purchase
         }
 
         @Override
         public void onError(int response, Exception e) {
             // handle errors here
+            Log.d("TAG21", "Response - " + response);
+            Log.d("TAG21", "Exc - " + e.getLocalizedMessage());
+            Toast.makeText(getApplicationContext(), "Exc - " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -57,10 +65,20 @@ public class MainActivity extends AppCompatActivity implements Storage{
         @Override
         public void onLoaded(Inventory.Products products) {
             final Inventory.Product product = products.get(ProductTypes.IN_APP);
+            Log.d("TAG21", "Product - " + product.id);
+            Log.d("TAG21", "Product - " + String.valueOf(product.supported));
+            Log.d("TAG21", "Product price - " + product.isPurchased("workout_remove_ads"));
+            Toast.makeText(getApplicationContext(), "success - " +  String.valueOf(product.isPurchased("workout_remove_ads")), Toast.LENGTH_SHORT).show();
+
+            if(product.isPurchased("workout_remove_ads")){
+                SharedManager.addProperty(Constants.KEY_ADS_DISABLED, true);
+                if(mAdView!=null){
+                    mAdView.destroy();
+                    mAdView.setVisibility(View.GONE);
+                }
+            }
         }
     }
-
-
 
     @BindView(R.id.adView)
     AdView mAdView;
@@ -72,22 +90,24 @@ public class MainActivity extends AppCompatActivity implements Storage{
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        if(!SharedManager.getProperty(Constants.KEY_ADS_DISABLED)){
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
+
         mCheckout.start();
         mCheckout.createPurchaseFlow(new PurchaseListener());
 
         mInventory = mCheckout.makeInventory();
         mInventory.load(Inventory.Request.create()
                 .loadAllPurchases()
-                .loadSkus(ProductTypes.IN_APP, "AD_FREE"), new InventoryCallback());
+                .loadSkus(ProductTypes.IN_APP, "workout_remove_ads"), new InventoryCallback());
 
         setStatusBar(new Events.SetStatusBar());
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Intent intent = new Intent(this, MyService.class);
         startService(intent);
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
 
         mainFragment = new MainFragment();
 
@@ -113,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements Storage{
         mCheckout.whenReady(new Checkout.EmptyListener() {
             @Override
             public void onReady(BillingRequests requests) {
-                requests.purchase(ProductTypes.IN_APP, "AD_FREE", null, mCheckout.getPurchaseFlow());
+                requests.purchase(ProductTypes.IN_APP, "workout_remove_ads", null, mCheckout.getPurchaseFlow());
             }
         });
     }
