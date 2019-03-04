@@ -45,11 +45,14 @@ public class MainActivity extends AppCompatActivity implements Storage{
         @Override
         public void onSuccess(Purchase purchase) {
             Toast.makeText(getApplicationContext(), "success - " + purchase.sku + " " + purchase.payload, Toast.LENGTH_SHORT).show();
-            Log.d("TAG21", "Success - " + purchase.data);
-            Log.d("TAG21", "Success - " + purchase.payload);
-            Log.d("TAG21", "Success - " + purchase.packageName);
-            Log.d("TAG21", "Success - " + purchase.sku);
             // here you can process the loaded purchase
+            if (purchase.sku.equals("workout_remove_ads")) {
+                SharedManager.addProperty(Constants.KEY_ADS_DISABLED, true);
+                if(mAdView!=null){
+                    mAdView.destroy();
+                    mAdView.setVisibility(View.GONE);
+                }
+            }
         }
 
         @Override
