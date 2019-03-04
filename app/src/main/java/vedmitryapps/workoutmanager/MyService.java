@@ -41,13 +41,10 @@ public class MyService extends Service {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStart(Events.StartWorkout workout) {
-        Log.d("TAG23", "Start - " + workout.getId() + " starting time - " + workout.getStartTime());
         if (progress.get(workout.getId()) == null) {
-            Log.d("TAG23", "Start - pr was null. set start time");
             progress.put(workout.getId(), workout.getStartTime());
             startWorkout(workout.getId(), true);
         } else {
-            Log.d("TAG23", "Start - pr was not null");
             startWorkout(workout.getId(), false);
         }
     }
@@ -59,7 +56,6 @@ public class MyService extends Service {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPause(Events.PauseWorkout workout) {
-        Log.d("TAG21", "Pause - " + workout.getId());
         ((TimerTask) workouts.get(workout.getId())).cancel();
         int curProg = (int) progress.get(workout.getId());
         progress.put(workout.getId(), curProg - 1);
@@ -81,7 +77,6 @@ public class MyService extends Service {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStop(Events.StopWorkout workout) {
-        Log.d("TAG21", "Stop workout");
 
         if (workouts.containsKey(workout.getId())) {
             ((TimerTask) workouts.get(workout.getId())).cancel();
@@ -94,7 +89,6 @@ public class MyService extends Service {
     }
 
     void startWorkout(final long id, boolean missStartSound) {
-        Log.d("TAG21", "Start workout");
 
         final WorkOut workOut = mRealm.where(WorkOut.class).equalTo("id", id).findFirst();
         final boolean[] mas = new boolean[1];
@@ -102,10 +96,8 @@ public class MyService extends Service {
         final int totalTime = Util.totalTime(workOut);
         final int currentProgress;
         if (progress.get(id) != null) {
-            Log.d("TAG21", "progress not null");
             currentProgress = (int) progress.get(id);
         } else {
-            Log.d("TAG21", "progress null");
             currentProgress = 0;
         }
 
@@ -113,23 +105,17 @@ public class MyService extends Service {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void run() {
-                Log.d("TAG22", "Step - " + currentProgress + " workout - " + id);
                 int currentProgress;
-
                 //if progress for this workout empty
                 if (progress.get(id) != null) {
                     currentProgress = (int) progress.get(id);
                 } else {
                     currentProgress = 0;
                 }
-
                 int repeatCount = 0;
                 if (repeat.containsKey(id)) {
                     repeatCount = (int) repeat.get(id);
                 }
-
-                Log.d("TAG23", "Step - " + currentProgress + " workout - " + id);
-                Log.d("TAG21", "cur - " + currentProgress);
                 Events.WorkoutStep step = new Events.WorkoutStep(id, currentProgress);
                 step.setRepeating(repeatCount);
                 if (currentProgress == totalTime) {
@@ -138,7 +124,6 @@ public class MyService extends Service {
                         finishedStepMap.put(step.getId(), step);
                         EventBus.getDefault().postSticky(finishedStepMap);
                     }
-                    //to show if app was foreground before
                 }
 
                 if(!App.isAppForground(getApplicationContext())){
@@ -149,23 +134,11 @@ public class MyService extends Service {
                 EventBus.getDefault().post(step);
                 Realm mRealm = Realm.getDefaultInstance();
                 WorkOut workOut1 = mRealm.where(WorkOut.class).equalTo("id", id).findFirst();
-                if(workOut1 == null){
-                    Log.d("TAG21", " WWWWWWWWWW - NULL!!!!!!!!!");
-                } else {
-                    Log.d("TAG21", " WWWWWWWWWW - NOT NULL");
-                }
                 sendNotification(step, workOut1);
 
-                for (int i = 0; i < workOut1.getExcersices().size(); i++) {
-                    Log.d("TAG23", workOut1.getExcersices().get(i).getName());
-                }
-
                 if (!mas[0]) {
-                    Log.d("23", " Not miss");
-                    if (Util.isLastSecond(context, workOut1, currentProgress))
-                        Log.d("23", " That's it!");
+                    Util.isLastSecond(context, workOut1, currentProgress);
                 } else {
-                    Log.d("23", " Miss first");
                     mas[0] = false;
                 }
 
@@ -174,14 +147,12 @@ public class MyService extends Service {
                 if ((int) progress.get(id) > totalTime) {
 
                     if (repeatCount > 0) {
-                        Log.d("TAG23", " repeatCount = " + repeatCount);
                         ((TimerTask) workouts.get(id)).cancel();
                         progress.put(id, null);
                         repeat.put(id, --repeatCount);
                         ((TimerTask) workouts.get(id)).cancel();
                         EventBus.getDefault().post(new Events.StartWorkout(id, 0));
                     } else {
-                        Log.d("TAG23", " cancel task current Progress");
                         ((TimerTask) workouts.get(id)).cancel();
                         workouts.remove(id);
                         progress.remove(id);

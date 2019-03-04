@@ -1,7 +1,6 @@
 <resources>
     <string name="admob_app_id" translatable="false">ca-app-pub-2209532931509792~8339365074</string>
     <string name="admob_banner_id" translatable="false">ca-app-pub-2209532931509792/8814718236</string>
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
      <string name="app_name">WorkoutTM</string>
     <string name="stop_workout">Stop workout</string>
     <string name="add_new_exercise">Add new exercise</string>
@@ -26,7 +25,6 @@
     <string name="pause">Pause</string>
     <string name="continueWorkout" >Continue</string>
     <string name="notifications">Notifications</string>
-    <string name="finished">Finished</string>
     <string name="notif_time">Progress time in notification</string>
     <string name="black">Dark theme</string>
     <string name="edit">Edit</string>
@@ -39,4 +37,5 @@
     <string name="vibration">Vibration</string>
     <string name="name_cant_be_empty">Name can\'t be empty</string>
     <string name="remove_ads">Remove Ads</string>
+    <string name="finished">Finished</string>
 </resources>

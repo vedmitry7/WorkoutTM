@@ -121,7 +121,7 @@ public class MainFragment extends Fragment {
     }
 
     private void initColors() {
-        if(SharedManager.getProperty(Constants.KEY_BLACK_ENABLED)){
+        if(!SharedManager.getProperty(Constants.KEY_BLACK_DISABLED)){
             toolbar.setBackgroundColor(getResources().getColor(R.color.colorToolbar));
             mainContainer.setBackgroundColor(getResources().getColor(R.color.colorBackground));
         } else {

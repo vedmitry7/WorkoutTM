@@ -192,15 +192,17 @@
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text=""
             android:textColor="@android:color/white"
             android:textSize="20dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/workoutSettings"
             app:layout_constraintStart_toEndOf="@+id/backButton"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
@@ -255,7 +257,7 @@
                 android:layout_gravity="center"
                 android:paddingLeft="8dp"
 
-                android:text="@string/add_new_workout"
+                android:text="@string/add_new_exercise"
                 android:textColor="@android:color/white"
                 android:textSize="14dp" />
 

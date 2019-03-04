@@ -83,10 +83,10 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        switchBlack.setChecked(SharedManager.getProperty(Constants.KEY_BLACK_ENABLED));
+        switchBlack.setChecked(!SharedManager.getProperty(Constants.KEY_BLACK_DISABLED));
         switchBlack.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedManager.addProperty(Constants.KEY_BLACK_ENABLED, isChecked);
+                SharedManager.addProperty(Constants.KEY_BLACK_DISABLED, !isChecked);
                 initColors();
             }
         });
@@ -98,7 +98,7 @@ public class SettingsFragment extends Fragment {
 
     private void initColors() {
         EventBus.getDefault().post(new Events.SetStatusBar());
-        if(SharedManager.getProperty(Constants.KEY_BLACK_ENABLED)){
+        if(!SharedManager.getProperty(Constants.KEY_BLACK_DISABLED)){
             int color = getContext().getResources().getColor(R.color.white_95);
             toolbar.setBackgroundColor(getResources().getColor(R.color.colorToolbar));
             mainContainer.setBackgroundColor(getResources().getColor(R.color.colorBackground));

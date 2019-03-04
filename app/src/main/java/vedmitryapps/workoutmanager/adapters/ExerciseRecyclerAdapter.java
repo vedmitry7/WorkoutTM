@@ -52,7 +52,7 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
         this.onStartDragListener = onStartDragListener;
         showNumber = SharedManager.getProperty(Constants.KEY_SHOW_POSITION);
         realm = Realm.getDefaultInstance();
-        black = SharedManager.getProperty(Constants.KEY_BLACK_ENABLED);
+        black = !SharedManager.getProperty(Constants.KEY_BLACK_DISABLED);
     }
 
     @Override
@@ -320,7 +320,11 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
 
         @Override
         public void onItemSelected() {
-            cardView.setBackgroundResource(R.drawable.workout_bg_selected);
+            if(black){
+                cardView.setBackgroundResource(R.drawable.workout_bg_selected_black);
+            } else {
+                cardView.setBackgroundResource(R.drawable.workout_bg_selected);
+            }
         }
 
         @Override
@@ -329,30 +333,5 @@ public class ExerciseRecyclerAdapter extends RecyclerView.Adapter<ExerciseRecycl
             notifyDataSetChanged();
 
         }
-    }
-
-    private void showChooseSoundDialog() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        final View dialogView = inflater.inflate(R.layout.choose_sound_dialog_layout, null);
-        dialogBuilder.setView(dialogView);
-        final RecyclerView recyclerView = dialogView.findViewById(R.id.soundRecyclerView);
-        final SoundRecyclerAdapter adapter = new SoundRecyclerAdapter();
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-
-        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-            }
-        });
-        dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog b = dialogBuilder.create();
-        b.show();
     }
 }

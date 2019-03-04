@@ -197,7 +197,7 @@ public class WorkOutFragment extends Fragment  {
     }
 
     private void initColors() {
-        if(SharedManager.getProperty(Constants.KEY_BLACK_ENABLED)){
+        if(!SharedManager.getProperty(Constants.KEY_BLACK_DISABLED)){
             int color = getContext().getResources().getColor(R.color.white_95);
 
             toolbar.setBackgroundColor(getResources().getColor(R.color.colorToolbar));

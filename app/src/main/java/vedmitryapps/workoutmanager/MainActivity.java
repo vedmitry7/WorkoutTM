@@ -7,11 +7,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -44,8 +42,6 @@ public class MainActivity extends AppCompatActivity implements Storage{
     private class PurchaseListener extends EmptyRequestListener<Purchase> {
         @Override
         public void onSuccess(Purchase purchase) {
-            Toast.makeText(getApplicationContext(), "success - " + purchase.sku + " " + purchase.payload, Toast.LENGTH_SHORT).show();
-            // here you can process the loaded purchase
             if (purchase.sku.equals("workout_remove_ads")) {
                 SharedManager.addProperty(Constants.KEY_ADS_DISABLED, true);
                 if(mAdView!=null){
@@ -57,10 +53,6 @@ public class MainActivity extends AppCompatActivity implements Storage{
 
         @Override
         public void onError(int response, Exception e) {
-            // handle errors here
-            Log.d("TAG21", "Response - " + response);
-            Log.d("TAG21", "Exc - " + e.getLocalizedMessage());
-            Toast.makeText(getApplicationContext(), "Exc - " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -68,11 +60,6 @@ public class MainActivity extends AppCompatActivity implements Storage{
         @Override
         public void onLoaded(Inventory.Products products) {
             final Inventory.Product product = products.get(ProductTypes.IN_APP);
-            Log.d("TAG21", "Product - " + product.id);
-            Log.d("TAG21", "Product - " + String.valueOf(product.supported));
-            Log.d("TAG21", "Product price - " + product.isPurchased("workout_remove_ads"));
-            Toast.makeText(getApplicationContext(), "success - " +  String.valueOf(product.isPurchased("workout_remove_ads")), Toast.LENGTH_SHORT).show();
-
             if(product.isPurchased("workout_remove_ads")){
                 SharedManager.addProperty(Constants.KEY_ADS_DISABLED, true);
                 if(mAdView!=null){
@@ -96,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements Storage{
         if(!SharedManager.getProperty(Constants.KEY_ADS_DISABLED)){
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
+            mAdView.setVisibility(View.VISIBLE);
         }
 
         mCheckout.start();
@@ -141,20 +129,18 @@ public class MainActivity extends AppCompatActivity implements Storage{
         });
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setStatusBar(Events.SetStatusBar event) {
 
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        if(SharedManager.getProperty(Constants.KEY_BLACK_ENABLED)){
+        if(!SharedManager.getProperty(Constants.KEY_BLACK_DISABLED)){
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorToolbar));
         } else {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.toolbar_new));
         }
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void openWorkout(Events.OpenWorkout event){
@@ -168,13 +154,7 @@ public class MainActivity extends AppCompatActivity implements Storage{
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStart(Events.WorkoutStep workout) {
-        Log.d("TAG21", "MA: Step - " + workout.getId() + " step - " + workout.getTime());
         stepMap.put(workout.getId(), workout);
-
-        for (Map.Entry item : stepMap.entrySet())
-        {
-            Log.d("TAG21", " --------  workout " + item.getKey() + " step - " + (item.getValue()));
-        }
         EventBus.getDefault().post(new Events.UpdateWorkout(workout.getId()));
     }
 
@@ -183,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements Storage{
         for (Map.Entry item : finishedStepMap.entrySet())
         {
             stepMap.put((Long) item.getKey(), (Events.WorkoutStep) item.getValue());
-            Log.d("TAG21", " -------- Finished workout " + item.getKey() + " step - " + (item.getValue()));
             EventBus.getDefault().post(new Events.UpdateWorkout((Long) item.getKey()));
             if(((Events.WorkoutStep) item.getValue()).isFinished()){
                 EventBus.getDefault().post(new Events.DeleteFromFinished((Long) item.getKey()));

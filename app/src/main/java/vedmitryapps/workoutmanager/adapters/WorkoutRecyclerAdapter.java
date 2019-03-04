@@ -52,7 +52,7 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         this.onStartDragListener = onStartDragListener;
         realm = Realm.getDefaultInstance();
 
-        black = SharedManager.getProperty(Constants.KEY_BLACK_ENABLED);
+        black = !SharedManager.getProperty(Constants.KEY_BLACK_DISABLED);
     }
 
     // inflates the row layout from xml when needed
@@ -130,7 +130,7 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
                     holder.repeating.setText("R" + workoutStep.getRepeating());
                 }
             } else {
-                holder.exerciseName.setText("Finished");
+                holder.exerciseName.setText(context.getString(R.string.finished));
                 holder.progressLayout.setVisibility(View.GONE);
                 holder.workoutTotalTime.setText(progress);
                 holder.buttonPause.setVisibility(View.GONE);
@@ -248,8 +248,11 @@ public class WorkoutRecyclerAdapter extends RecyclerView.Adapter<WorkoutRecycler
         @Override
         public void onItemSelected() {
             mode = Mode.DRAG_AND_DROP;
-          cardView.setBackgroundResource(R.drawable.workout_bg_selected);
-
+            if(black){
+                cardView.setBackgroundResource(R.drawable.workout_bg_selected_black);
+            } else {
+                cardView.setBackgroundResource(R.drawable.workout_bg_selected);
+            }
         }
 
         @Override
