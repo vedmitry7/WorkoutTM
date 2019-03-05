@@ -668,7 +668,9 @@ public class WorkOutFragment extends Fragment  {
         if(stepMap.get(workOut.getId())!=null){
             setStepInfo(stepMap.get(workOut.getId()));
         } else {
-            onClickExercise(new Events.ClickExercise(adapter.getSelectedItemPos()));
+            if(workOut.getExcersices()!=null && workOut.getExcersices().size()!=0){
+                onClickExercise(new Events.ClickExercise(adapter.getSelectedItemPos()));
+            }
         }
     }
 
@@ -687,7 +689,9 @@ public class WorkOutFragment extends Fragment  {
         if(stepMap.get(workOut.getId())!=null){
             setStepInfo(stepMap.get(workOut.getId()));
         } else {
-            onClickExercise(new Events.ClickExercise(adapter.getSelectedItemPos()));
+            if(workOut.getExcersices()!=null && workOut.getExcersices().size()!=0){
+                onClickExercise(new Events.ClickExercise(adapter.getSelectedItemPos()));
+            }
         }
     }
 
