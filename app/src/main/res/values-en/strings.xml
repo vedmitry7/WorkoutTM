@@ -37,4 +37,5 @@
     <string name="vibration">Vibration</string>
     <string name="name_cant_be_empty">Name can\'t be empty</string>
     <string name="remove_ads">Remove Ads</string>
+    <string name="rate_this_app">Rate this application</string>
 </resources>

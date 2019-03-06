@@ -1,8 +1,11 @@
 package vedmitryapps.workoutmanager.fragments;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -50,6 +53,7 @@ public class SettingsFragment extends Fragment {
     @BindView(R.id.textView4) TextView textView4;
     @BindView(R.id.textView5) TextView textView5;
     @BindView(R.id.textAdFree) TextView textAdFree;
+    @BindView(R.id.rateText) TextView rateText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -109,6 +113,7 @@ public class SettingsFragment extends Fragment {
             textView5.setTextColor(color);
             soundName.setTextColor(color);
             textAdFree.setTextColor(color);
+            rateText.setTextColor(color);
         } else {
             toolbar.setBackgroundColor(getResources().getColor(R.color.toolbar_new));
             mainContainer.setBackgroundColor(getResources().getColor(R.color.background_new));
@@ -119,6 +124,7 @@ public class SettingsFragment extends Fragment {
             textView5.setTextColor(Color.BLACK);
             soundName.setTextColor(Color.BLACK);
             textAdFree.setTextColor(Color.BLACK);
+            rateText.setTextColor(Color.BLACK);
         }
     }
 
@@ -164,6 +170,23 @@ public class SettingsFragment extends Fragment {
     @OnClick(R.id.removeIds)
     public void removeIds(View v){
         EventBus.getDefault().post(new Events.RemoveAds());
+    }
+
+    @OnClick(R.id.rate)
+    public void rate(View v){
+        Uri uri = Uri.parse("market://details?id=" + getContext().getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + getContext().getPackageName())));
+        }
 
     }
 }

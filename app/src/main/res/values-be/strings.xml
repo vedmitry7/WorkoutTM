@@ -37,4 +37,6 @@
     <string name="vibration">Вибрация</string>
     <string name="name_cant_be_empty">Имя не может быть пустым</string>
     <string name="remove_ads">Убрать рекламу</string>
+    <string name="rate_this_app">Оценить приложение</string>
+
 </resources>
